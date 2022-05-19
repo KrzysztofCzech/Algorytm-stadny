@@ -4,6 +4,8 @@ from jmetal import logging
 from jmetal.algorithm.singleobjective.evolution_strategy import EvolutionStrategy
 from jmetal.util.solution import get_non_dominated_solutions
 
+from Evolutionary_algorithm import S
+
 @dataclass
 class PopulationsData:
     solution_spread : float    
@@ -44,3 +46,16 @@ class Island():
 
     def get_history_soultion(self):
         return self.history_solution
+
+    def get_solutions(self):
+        return self.algorithm.solutions
+
+    def update_solutions(self, new_solutions):
+        mating_population = self.algorithm.selection(self.algorithm.solutions + new_solutions)
+        offspring_population = self.algorithm.reproduction(mating_population)
+        offspring_population = self.algorithm.evaluate(offspring_population)
+
+        self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions + new_solutions, offspring_population)
+        
+        self.update_history()
+        

@@ -11,6 +11,7 @@ from jmetal.util.constraint_handling import overall_constraint_violation_degree
 from jmetal.core.operator import Crossover
 from jmetal.core.operator import Selection
 from jmetal.operator.selection import NaryRandomSolutionSelection
+from sympy import true
 
 S = TypeVar('S')
 R = TypeVar('R')
@@ -19,7 +20,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
     def __init__(self,
                  problem: Problem,
-                 popultion_size: int,
+                 population_size: int,
                  offspring_population_size: int,
                  mutation: Mutation,
                  crossover: Crossover,
@@ -29,15 +30,15 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
                  population_evaluator: Evaluator = SequentialEvaluator()):
         super(EvolutionAlgoritm, self).__init__(
             problem=problem,
-            population_size=popultion_size,
+            population_size=population_size,
             offspring_population_size=offspring_population_size)
-        self.popultion_size = popultion_size
+        self.population_size = population_size
         self.offspring_population_size = offspring_population_size
 
         self.mutation_operator = mutation
         self.crossover_operator = crossover
         self.selection_operator = selection
-        self.replacement_operator = NaryRandomSolutionSelection(number_of_solutions_to_be_returned=popultion_size)
+        self.replacement_operator = NaryRandomSolutionSelection(number_of_solutions_to_be_returned=population_size)
 
         self.population_generator = population_generator
         self.population_evaluator = population_evaluator
@@ -56,12 +57,12 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
         return self.termination_criterion.is_met
 
     def selection(self, population: List[S]) -> List[S]:
-        return self.selection_operator.execute(population)
+        return population
 
     def reproduction(self, population: List[S]) -> List[S]:
         offspring_population = []
         for solution in population:
-            for j in range(int(self.lambda_ / self.mu)):
+            for j in range(int(self.offspring_population_size / self.population_size)):
                 new_solution = copy(solution)
                 offspring_population.append(self.mutation_operator.execute(new_solution))
 
@@ -70,17 +71,17 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
     def replacement(self, population: List[S], offspring_population: List[S]) -> List[S]:
         population_pool = []
 
-        if self.elitist:
-            population_pool = population
-            population_pool.extend(offspring_population)
-        else:
-            population_pool.extend(offspring_population)
-
-        # population_pool.sort(key=lambda s: (overall_constraint_violation_degree(s), s.objectives[0]))
-
-        new_population = self.selection_operator.execute(population_pool)
+        population_pool = population
+        population_pool.extend(offspring_population)
 
 
+        population_pool.sort(key=lambda s: (overall_constraint_violation_degree(s), s.objectives[0]))
+
+        #new_population = self.replacement_operator.execute(population_pool)
+
+        new_population = []
+        for i in range(self.population_size):
+            new_population.append(population_pool[i])
         return new_population
 
     def get_result(self) -> R:
