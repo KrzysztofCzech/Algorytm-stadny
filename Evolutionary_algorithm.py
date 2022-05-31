@@ -62,9 +62,18 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
     def reproduction(self, population: List[S]) -> List[S]:
         offspring_population = []
         for solution in population:
-            for j in range(int(self.offspring_population_size / self.population_size)):
+            for j in range(int(self.offspring_population_size / len(population))):
                 new_solution = copy(solution)
                 offspring_population.append(self.mutation_operator.execute(new_solution))
+
+        return offspring_population
+
+    def crossover(self, population: List[S]) -> List[S]:
+        offspring_population = []
+        for idx, solution in enumerate(population, start= 1):
+            for j in range(int(len(population)*2)):
+                new_solution = copy(solution)
+                offspring_population.extend(self.crossover_operator.execute([new_solution, self.solutions[j*idx % self.population_size]]))
 
         return offspring_population
 
@@ -75,8 +84,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
         population_pool.extend(offspring_population)
 
 
-        population_pool.sort(key=lambda s: (overall_constraint_violation_degree(s), s.objectives[0]))
-
+        population_pool.sort(key=lambda s:(overall_constraint_violation_degree(s), s.objectives[0]))
         #new_population = self.replacement_operator.execute(population_pool)
 
         new_population = []

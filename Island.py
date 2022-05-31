@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import random
 from jmetal import logging 
-from jmetal.algorithm.singleobjective.evolution_strategy import EvolutionStrategy
+from Evolutionary_algorithm import EvolutionAlgoritm
 from jmetal.util.solution import get_non_dominated_solutions
 
 from Evolutionary_algorithm import S
@@ -13,7 +13,7 @@ class PopulationsData:
 
 logger = logging.getLogger(__name__)
 class Island():
-    def __init__(self, algorithm : EvolutionStrategy) -> None:
+    def __init__(self, algorithm : EvolutionAlgoritm) -> None:
         self.algorithm = algorithm
         self.history_solution = []
         self.history_population = []
@@ -51,11 +51,11 @@ class Island():
         return self.algorithm.solutions
 
     def update_solutions(self, new_solutions):
-        mating_population = self.algorithm.selection(self.algorithm.solutions + new_solutions)
-        offspring_population = self.algorithm.reproduction(mating_population)
-        offspring_population = self.algorithm.evaluate(offspring_population)
+        mating_population = self.algorithm.selection(new_solutions)
+        crossover_population = self.algorithm.crossover(mating_population)
+        offspring_population = self.algorithm.evaluate(crossover_population)
 
-        self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions + new_solutions, offspring_population)
+        self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions, crossover_population)
         
-        self.update_history()
+        #self.update_history()
         
