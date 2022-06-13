@@ -18,12 +18,16 @@ class Island():
         self.history_solution = []
         self.history_population = []
 
-    def start(self,seed):
-        random.seed(seed)
+    def start(self,seed =None):
+        if seed is not None:
+            random.seed(seed)
         self.algorithm.solutions = self.algorithm.create_initial_solutions()
         self.algorithm.solutions = self.algorithm.evaluate(self.algorithm.solutions)
 
         self.algorithm.init_progress()
+
+        self.history_population = []
+        self.history_solution = []
 
     
     def run(self,iterations):

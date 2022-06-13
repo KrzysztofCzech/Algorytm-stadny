@@ -15,17 +15,7 @@ def draw_comparision_agents_plot(Agents_list : List[Agent], name :  Str):
     plt.savefig(os.path.join('figs', f"{name}.jpg"))
     plt.show()
 
-def draw_comparisson_multi_and_single(Agents_list: List[Agent], agent_single : Agent, name: Str):
-    res_multi = Agents_list[0].Island.get_history_soultion()
-    x_coord_multi = list(range(1, len(res_multi)+1))
-
-    #get best solution for iteration from agents over time assuming equal number of iterations
-    for agent in Agents_list[1:]:
-        temp = agent.Island.get_history_soultion()
-       
-        for i in range(len(temp)):
-            res_multi[i] = min(res_multi[i], temp[i])
-            x_coord_multi[i] += i
+def draw_comparisson_multi_and_single(x_coord_multi, res_multi, agent_single : Agent, name: Str):
 
     plt.plot(x_coord_multi, res_multi)
     plt.plot(range(len(agent_single.Island.get_history_soultion())), agent_single.Island.get_history_soultion())
