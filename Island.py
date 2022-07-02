@@ -18,6 +18,11 @@ class Island():
         self.history_solution = []
         self.history_population = []
 
+    def clear_data_and_start(self):
+        self.history_solution = []
+        self.history_population = []
+        self.start()
+
     def start(self,seed =None):
         if seed is not None:
             random.seed(seed)
@@ -55,11 +60,9 @@ class Island():
         return self.algorithm.solutions
 
     def update_solutions(self, new_solutions):
-        mating_population = self.algorithm.selection(new_solutions)
-        crossover_population = self.algorithm.crossover(mating_population)
+        crossover_population = self.algorithm.crossover(new_solutions)
         offspring_population = self.algorithm.evaluate(crossover_population)
 
-        self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions, crossover_population)
-        
-        #self.update_history()
+        self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions, offspring_population)
+
         

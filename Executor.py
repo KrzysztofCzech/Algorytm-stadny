@@ -17,9 +17,13 @@ class MultiAgentRunner:
         self.__agents = agents
         self._agent_single = agent_single
 
+    def get_agents(self):
+        return self.__agents
+
     def initalize(self):
         for agent in self.__agents:
             agent.initalize()
+        self._agent_single.initalize()
 
     
     def add_Agent(self, agent: Agent) -> None:
@@ -35,9 +39,8 @@ class MultiAgentRunner:
                 agent.communicate(self.__agents[randint(0,len(self.__agents)-1)])
 
 
-    def run(self, cycles : int, num_of_comm : int, cycle_iter: int):
+    def run(self, cycles : int, cycle_iter: int, num_of_comm:int):
         for i in range(cycles):
-            print(f"cycle {i}")
             self.run_cycle(cycle_iter)
             self.communicate(num_of_comm)
         
@@ -47,9 +50,9 @@ class MultiAgentRunner:
         self.plot_results()
         
     def plot_results(self):
-        x_coord, results_multi, _ , _ = self.get_results(self.__agents)
-        draw_comparision_agents_plot(x_coord, results_multi, name = "Wykres porównania działania agentów")
-        draw_comparisson_multi_and_single(self.__agents, self._agent_single, name = "Socjo Multi Comparison")
+        x_coord_multi, results_multi, x_coord_single , results_single = self.get_results()
+        draw_comparision_agents_plot(self.__agents, name = "Wykres porównania działania agentów")
+        draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = "Socjo Multi Comparison")
 
 
     def run_comparison(self):

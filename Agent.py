@@ -1,21 +1,23 @@
 from ast import Str
 from Island import Island
-from communication import AttiduteType, get_selector
+from communication import AttiduteType, get_selector, CommunicationType, CommunicationBasic
 from statistics import mean
-from jmetal.core.solution import FloatSolution
+
 from typing import List
-
-
-def mean_of_solutions(solutions : List[FloatSolution]):
-    return mean([solution.objectives[0] for solution in solutions])
+from Utils  import mean_of_solutions
 
 class Agent():
-    def __init__ (self,Island:Island, name: Str, attidute : AttiduteType):
+    def __init__ (self,Island:Island, name: Str, attidute : AttiduteType, communication_type : CommunicationType):
         self.Island = Island
         self.name = name
         self.trust_dict = {}
         self.attidute = attidute
+        self.communication = communication_type
 
+
+    def initalize(self):
+        self.trust_dict = {}
+        self.Island.clear_data_and_start()
 
     def run(self, iterations):
         self.Island.run(iterations)
@@ -34,20 +36,7 @@ class Agent():
 
     def communicate(self, obj):
         
-        new_population = obj.transfer_data(self.name)
-        solutions_old = self.get_solution()
-        mean_old = mean_of_solutions(solutions_old)
-        mean_new = mean_of_solutions(new_population)
-        if mean_new < mean_old:
-            self.Island.update_solutions(new_population)
-            solutions_new = self.get_solution()
-            mean_update = mean_of_solutions(solutions_new)
-            if mean_update < mean_old:
-                self.update_trust(obj.name, 1)
-
-
-
-
+        self.communication.comunnicate(self, obj)
 
 
     def get_num_of_iteration(self):
