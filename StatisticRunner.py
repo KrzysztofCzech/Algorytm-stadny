@@ -36,7 +36,7 @@ class StatisticRunner:
         for i in range(no_runs):
             self.Executor.initalize()
             self.Executor.run(cycles, cycle_iter, num_of_comm)
-            self.history.add_data(*self.Executor.get_results(),int((cycles * cycle_iter)/100), len(self.Executor.get_agents()))
+            self.history.add_data(*self.Executor.get_results(),int((cycles * cycle_iter)/50), len(self.Executor.get_agents()))
 
 
     

@@ -28,7 +28,7 @@ def draw_comparisson_multi_and_single(x_coord_multi, res_multi, x_coord_single ,
 def boxplot(series, positions, title):
     plt.boxplot(series, positions=positions)
     plt.title(title)
-    plt.xticks(positions[::50])
+    plt.xticks(positions[::2])
     plt.savefig(os.path.join('figs', f"{title}.jpg"))
     plt.show()
 

@@ -12,38 +12,28 @@ def communicate(self, number_of_communications)
 
 # Dostępne typy komunikacji 
 
-## Basic Communication plik communication.py 
-1. uzysaknie osobników od agenta2 na podstawie zaufania
-    new_population = agent2.transfer_data(agent1.name) 
-2. porwnanie średnich wartości uzyskanej populacji z aktualną 
-    solutions_old = agent1.get_solution() 
-    mean_old = mean_of_solutions(solutions_old)
-    mean_new = mean_of_solutions(new_population)
-    if mean_new < mean_old:
-3. aktualizacja populacji 
-        agent1.Island.update_solutions(new_population)
-    1. plik Island.py
-        * def update_solutions(self, new_solutions):
-    2. uzykanie populacji stosując operator crossover wykorzystając operator  przekazany podczas inicjalizacji aktulanie uzywnany jest SBXCrossover
+1. Basic Communication plik communication.py 
+   * new_population = agent2.transfer_data(agent1.name) **->uzysaknie osobników od agenta2 na podstawie zaufania**
+   * solutions_old = agent1.get_solution()  **-> porownanie średnich wartości uzyskanej populacji z aktualną** 
+   * mean_old = mean_of_solutions(solutions_old) 
+   * mean_new = mean_of_solutions(new_population)\
+   * if mean_new < mean_old:
+        * agent1.Island.update_solutions(new_population)  **->aktualizacja populacji** 
+        * solutions_new = agent1.get_solution() **-> sprawdzenie poprawy populacji**
+        * mean_updated = mean_of_solutions(solutions_new)
+        * if mean_updated < mean_old:
+            * agent1.update_trust(agent2.name, 1)
+2. plik Island.py
+    * def update_solutions(self, new_solutions): **-> uzykanie populacji stosując operator crossover wykorzystając operator  przekazany podczas inicjalizacji aktulanie uzywnany jest SBXCrossover**
         * crossover_population = self.algorithm.crossover(new_solutions)
-        1. plik Evolutionary_algorithm.py
-            * def crossover(self, population: List[S]) -> List[S]:
-                * offspring_population = []
-                * for idx, solution in enumerate(population, start= 1):
-                    * for j in range(int(len(population)*2)):
-                        * new_solution = copy(solution)
-        2. uzyskanie nowego osobnika wykonując crossover na otrzymanaym osobniku oraz jednym ze starych osobnikó
-            * offspring_population.extend(self.crossover_operator.execute([new_solution, self.solutions[j*idx % self.population_size]]))
-                * return offspring_population
-   1. ewaluacja wyników i zapisanie nowych rozwiązań    
-        * offspring_population = self.algorithm.evaluate(crossover_population)
+        * offspring_population = self.algorithm.evaluate(crossover_population) **-> ewaluacja wyników i zapisanie nowych rozwiązań**
         * self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions, offspring_population.
 
-4. sprawdzenie poprawy populacji       
-    * solutions_new = agent1.get_solution()
-    * mean_updated = mean_of_solutions(solutions_new)
-    * if mean_updated < mean_old:
-        * agent1.update_trust(agent2.name, 1)
-
-5. aktualizacja rozwiazań
-    * agent1.Island.update_solutions(new_population)
+3. plik Evolutionary_algorithm.py
+   * def crossover(self, population: List[S]) -> List[S]:
+        * offspring_population = []
+        * for idx, solution in enumerate(population, start= 1):
+            * for j in range(int(len(population)*2)):
+                * new_solution = copy(solution) **-> uzyskanie nowego osobnika wykonując crossover na otrzymanaym osobniku oraz jednym ze starych osobników**
+                * offspring_population.extend(self.crossover_operator.execute([new_solution, self.solutions[j*idx % self.population_size]]))
+        * return offspring_population
