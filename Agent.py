@@ -1,10 +1,8 @@
 from ast import Str
 from Island import Island
-from communication import AttiduteType, get_selector, CommunicationType, CommunicationBasic
-from statistics import mean
+from communication import AttiduteType, get_selector, CommunicationType
 
 from typing import List
-from Utils  import mean_of_solutions
 
 class Agent():
     def __init__ (self,Island:Island, name: Str, attidute : AttiduteType, communication_type : CommunicationType):
@@ -25,13 +23,18 @@ class Agent():
     def get_result(self):
         return self.Island.algorithm.get_result()
 
-    def get_solution(self):
+    def get_trust(self, name_other: Str) -> int:
+        if not (name_other in self.trust_dict):
+            self.trust_dict[name_other] = 1
+        return  self.trust_dict[name_other]
+
+    def get_solutions(self):
         return self.Island.get_solutions()
 
     def transfer_data(self, name_other):
         trust_level = self.check_trust(name_other)
         selector = get_selector(self.attidute)
-        return selector(trust_level, self.get_solution())
+        return selector(trust_level, self.get_solutions())
 
 
     def communicate(self, obj):

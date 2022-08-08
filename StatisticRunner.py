@@ -36,13 +36,14 @@ class StatisticRunner:
         for i in range(no_runs):
             self.Executor.initalize()
             self.Executor.run(cycles, cycle_iter, num_of_comm)
-            self.history.add_data(*self.Executor.get_results(),int((cycles * cycle_iter)/50), len(self.Executor.get_agents()))
+            self.history.add_data(*self.Executor.get_results(),max((int((cycles * cycle_iter)/20),1) ), len(self.Executor.get_agents()))
 
 
     
     def plot(self):
-        boxplot(self.history.results_multi, self.history.x_coor_multi[0,:], "Statistic results multi")
-        boxplot(self.history.results_single, self.history.x_coor_single[0,:], "Statistic results single")
+        boxplot(self.history.results_multi, self.history.x_coor_multi[0,:], "Multi-Agent System resuts")
+        boxplot(self.history.results_single, self.history.x_coor_single[0,:], "Single-Agent System results")
+        boxplot(self.history.results_single - self.history.results_multi, self.history.x_coor_single[0,:], "Diffence beetween Single-Agent and Multi-Agent")
         
 
 

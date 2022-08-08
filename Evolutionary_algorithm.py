@@ -11,7 +11,6 @@ from jmetal.util.constraint_handling import overall_constraint_violation_degree
 from jmetal.core.operator import Crossover
 from jmetal.core.operator import Selection
 from jmetal.operator.selection import NaryRandomSolutionSelection
-from sympy import true
 
 S = TypeVar('S')
 R = TypeVar('R')
@@ -68,25 +67,20 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
         return offspring_population
 
-    def crossover(self, population: List[S]) -> List[S]:
-        offspring_population = []
-        for idx, solution in enumerate(population, start= 1):
-            for j in range(int(len(population)*2)):
-                new_solution = copy(solution)
-                offspring_population.extend(self.crossover_operator.execute([new_solution, self.solutions[j*idx % self.population_size]]))
-
-        return offspring_population
-
     def replacement(self, population: List[S], offspring_population: List[S]) -> List[S]:
         population_pool = []
-
+        min1 = min([sol.objectives[0] for sol in population])
         population_pool = population
         population_pool.extend(offspring_population)
+        min2 = min([sol.objectives[0] for sol in population_pool])
+        if min1 < min2:
+            print("one not working")
 
 
         population_pool.sort(key=lambda s:(overall_constraint_violation_degree(s), s.objectives[0]))
         #new_population = self.replacement_operator.execute(population_pool)
-
+        if population_pool[0].objectives[0] > min2:
+            print("not working two")
         new_population = []
         for i in range(self.population_size):
             new_population.append(population_pool[i])

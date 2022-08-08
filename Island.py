@@ -3,7 +3,7 @@ import random
 from jmetal import logging 
 from Evolutionary_algorithm import EvolutionAlgoritm
 from jmetal.util.solution import get_non_dominated_solutions
-
+from copy import deepcopy
 from Evolutionary_algorithm import S
 
 @dataclass
@@ -47,6 +47,8 @@ class Island():
 
     def update_history(self):
         best_fitness = self.algorithm.solutions[0].objectives[0]
+        if len(self.history_population) and self.history_solution[-1] < best_fitness:
+            print(len(self.history_population))
         self.history_solution.append(best_fitness)
         
         spread = max([sol.objectives[0] for sol in self.algorithm.solutions]) -  min([sol.objectives[0] for sol in self.algorithm.solutions])
@@ -57,12 +59,25 @@ class Island():
         return self.history_solution
 
     def get_solutions(self):
-        return self.algorithm.solutions
+        return deepcopy(self.algorithm.solutions)
 
-    def update_solutions(self, new_solutions):
-        crossover_population = self.algorithm.crossover(new_solutions)
-        offspring_population = self.algorithm.evaluate(crossover_population)
+    def update_solutions(self, new_population):
+        best =  min([sol.objectives[0] for sol in self.algorithm.solutions])
+        offspring_population = self.algorithm.evaluate(new_population)
+        best1 =  min([sol.objectives[0] for sol in self.algorithm.solutions])
 
         self.algorithm.solutions = self.algorithm.replacement(self.algorithm.solutions, offspring_population)
+        best2 =  min([sol.objectives[0] for sol in self.algorithm.solutions])
+        if best2  >best:
+            print("not working 2222")
+            print(f"best1 {best1}")
+            print(f"best2 {best2}")
+            print(f"best {best}")
+
+        if best2  >best1:
+            print("not working 3333")
+            print(f"best1 {best1}")
+            print(f"best2 {best2}")
+            print(f"best {best}")
 
         
