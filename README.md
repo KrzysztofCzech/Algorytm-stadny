@@ -37,3 +37,7 @@ def communicate(self, number_of_communications)
                 * new_solution = copy(solution) **-> uzyskanie nowego osobnika wykonując crossover na otrzymanaym osobniku oraz jednym ze starych osobników**
                 * offspring_population.extend(self.crossover_operator.execute([new_solution, self.solutions[j*idx % self.population_size]]))
         * return offspring_population
+        
+# Kolejne kroki
+
+Dodac nowe opeartory zbliżania do siebie osobniów uzyskanych z komunikacji tj. updabanic niektóre rozwiązania do siebie zależnie od zaufania między agentami
