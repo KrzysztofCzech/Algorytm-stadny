@@ -1,10 +1,8 @@
-from dataclasses import dataclass
-from itertools import cycle
 
 from random import randint
-from Agent import Agent
-from typing import List, Optional
-from plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single
+from agent.agent import Agent
+from typing import List
+from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single
 
 
 class MultiAgentRunner:
@@ -43,16 +41,16 @@ class MultiAgentRunner:
         for i in range(cycles):
             self.run_cycle(cycle_iter)
             self.communicate(num_of_comm)
-        
-        print("Running comparison")
+
         self.run_comparison()
 
         self.plot_results()
         
     def plot_results(self):
+        problem = self.__agents[0].Island.algorithm.problem
         x_coord_multi, results_multi, x_coord_single , results_single = self.get_results()
-        draw_comparision_agents_plot(self.__agents, name = "Wykres porównania działania agentów")
-        draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = "Socjo Multi Comparison")
+        draw_comparision_agents_plot(self.__agents, name = "Agent comaprison in multi-agent system ")
+        draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison {problem.get_name()} {problem.number_of_variables} variables")
 
 
     def run_comparison(self):
@@ -70,7 +68,7 @@ class MultiAgentRunner:
             for i in range(len(temp)):
                 res_multi[i] = min(res_multi[i], temp[i])
                 x_coord_multi[i] += i
-        return x_coord_multi, res_multi, range(len(self._agent_single.Island.get_history_soultion())), self._agent_single.Island.get_history_soultion()
+        return x_coord_multi, res_multi, list(range(len(self._agent_single.Island.get_history_soultion()))), self._agent_single.Island.get_history_soultion()
         
 
         

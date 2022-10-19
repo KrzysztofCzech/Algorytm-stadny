@@ -1,8 +1,7 @@
 
 from copy import copy
 
-from numpy import diff
-from Evolutionary_algorithm import S
+from agent.algorithm import S
 import random 
 from jmetal.core.solution import Solution
 import numpy as np

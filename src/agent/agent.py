@@ -1,11 +1,9 @@
-from ast import Str
-from Island import Island
-from communication import AttiduteType, get_selector, CommunicationType
+from agent.island import Island
+from communication.types import AttiduteType, get_selector, CommunicationType
 
-from typing import List
 
 class Agent():
-    def __init__ (self,Island:Island, name: Str, attidute : AttiduteType, communication_type : CommunicationType):
+    def __init__ (self,Island:Island, name: str, attidute : AttiduteType, communication_type : CommunicationType):
         self.Island = Island
         self.name = name
         self.trust_dict = {}
@@ -23,7 +21,7 @@ class Agent():
     def get_result(self):
         return self.Island.algorithm.get_result()
 
-    def get_trust(self, name_other: Str) -> int:
+    def get_trust(self, name_other: str) -> int:
         if not (name_other in self.trust_dict):
             self.trust_dict[name_other] = 1
         return  self.trust_dict[name_other]
@@ -51,7 +49,7 @@ class Agent():
         
         return self.trust_dict[name_other]
 
-    def update_trust(self, name_other: Str, val: int) -> None:
+    def update_trust(self, name_other: str, val: int) -> None:
         if not (name_other in self.trust_dict):
             self.trust_dict[name_other] = 1
         self.trust_dict[name_other] += val

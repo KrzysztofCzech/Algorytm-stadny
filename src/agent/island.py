@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 import random
 from jmetal import logging 
-from Evolutionary_algorithm import EvolutionAlgoritm
-from jmetal.util.solution import get_non_dominated_solutions
+from agent.algorithm import EvolutionAlgoritm, S
+
 from copy import deepcopy
-from Evolutionary_algorithm import S
 
 @dataclass
 class PopulationsData:

@@ -1,0 +1,9 @@
+
+{
+    "LOG_LEVEL" : "INFO",
+    "number_of_agents" : 10,
+    "problem":"Rastrigin",
+    "problem_size": 80,
+    "communication_type":"communication_with_mutation",
+    "communication_operator": "swap"
+}

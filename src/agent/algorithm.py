@@ -8,7 +8,6 @@ from jmetal.util.evaluator import Evaluator, SequentialEvaluator
 from jmetal.util.generator import Generator, RandomGenerator
 from jmetal.util.termination_criterion import TerminationCriterion
 from jmetal.util.constraint_handling import overall_constraint_violation_degree
-from jmetal.core.operator import Crossover
 from jmetal.core.operator import Selection
 from jmetal.operator.selection import NaryRandomSolutionSelection
 
@@ -22,7 +21,6 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
                  population_size: int,
                  offspring_population_size: int,
                  mutation: Mutation,
-                 crossover: Crossover,
                  selection: Selection,
                  termination_criterion: TerminationCriterion,
                  population_generator: Generator = RandomGenerator(),
@@ -35,7 +33,6 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
         self.offspring_population_size = offspring_population_size
 
         self.mutation_operator = mutation
-        self.crossover_operator = crossover
         self.selection_operator = selection
         self.replacement_operator = NaryRandomSolutionSelection(number_of_solutions_to_be_returned=population_size)
 
