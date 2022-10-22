@@ -3,6 +3,14 @@ from statistics import mean
 from jmetal.core.solution import Solution
 import os
 import numpy as np
+from json import JSONEncoder
+
+class NumpyArrayEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return JSONEncoder.default(self, obj)
+
 
 def prepare_array(array, sampling):
     return [array[0]]+ array[::sampling] 

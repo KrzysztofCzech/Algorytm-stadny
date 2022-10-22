@@ -44,7 +44,7 @@ class MultiAgentRunner:
 
         self.run_comparison()
 
-        self.plot_results()
+       # self.plot_results()
         
     def plot_results(self):
         problem = self.__agents[0].Island.algorithm.problem

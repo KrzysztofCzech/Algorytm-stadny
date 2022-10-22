@@ -12,8 +12,6 @@ class ConfigData:
     commuincationType: CommunicationType
 
 
-
-
 class Settings:
     def __init__(self, json_settings):
         self.json_settings= json.load(json_settings)
@@ -21,7 +19,9 @@ class Settings:
 
     def decodeJson(self):
         self.log_level = self.decodeLogLevel()
+        self.maxtime = self.json_settings["max_time"]
         self.agents_data = self.decodeAgentsData()
+        self.enable_plots = self.json_settings["enable_plots"]
 
     def decodeLogLevel(self):
         return logging.INFO
