@@ -9,7 +9,6 @@ import numpy as np
 
 def crossover(population_old, population_new, crossover_operator):
     offspring_population = []
-    population_size = len(population_old)
     for idx, solution in enumerate(population_new, start= 1):
         for j in range(int(len(population_new))):
             new_solution = copy(solution)
@@ -19,11 +18,25 @@ def crossover(population_old, population_new, crossover_operator):
 
 def mutation(population_old, population_new, mutation_oparator, trust_level):
     offspring_population = []
-    population_size = len(population_old)
     for idx, solution in enumerate(population_new, start= 1):
         new_solution = copy(solution)
         offspring_population.append(mutation_oparator(new_solution, random.choice( population_old),trust_level))
+    return offspring_population
 
+def mutation_temp1(population_old, population_new, mutation_oparator, trust_level):
+    offspring_population = []
+    for idx, solution in enumerate(population_new, start= 1):
+        new_solution = copy(solution)
+        for i in range(trust_level):
+                offspring_population.append(mutation_oparator(new_solution, random.choice( population_old),trust_level))
+    return offspring_population
+
+def mutation_temp2(population_old, population_new, mutation_oparator, trust_level):
+    offspring_population = []
+    for idx, solution in enumerate(population_new, start= 1):
+        new_solution = copy(solution)
+        for i in range(trust_level):
+                offspring_population.append(mutation_oparator(new_solution, random.choice( population_old),1))
     return offspring_population
 
 def average_operator(new_solution : Solution, old_soultion: Solution, trust_level :int):

@@ -20,7 +20,7 @@ class StatisticRunner:
             self.Executor.initalize()
             self.Executor.run(cycles, cycle_iter, num_of_comm)
             self.history.add_data(*self.Executor.get_results(),2 , len(self.Executor.get_agents()))
-            self.save_progres("results")
+            logging.debug(f"Run {i} out of {no_runs}")            
 
     def save_progres(self, filename = None):
         data = {}

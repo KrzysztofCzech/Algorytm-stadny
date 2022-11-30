@@ -1,6 +1,6 @@
 from agent.island import Island
 from communication.types import AttiduteType, get_selector, CommunicationType
-
+import logging
 
 class Agent():
     def __init__ (self,Island:Island, name: str, attidute : AttiduteType, communication_type : CommunicationType):
@@ -36,7 +36,7 @@ class Agent():
 
 
     def communicate(self, obj):
-        
+
         self.communication.comunnicate(self, obj)
 
 
@@ -52,7 +52,10 @@ class Agent():
     def update_trust(self, name_other: str, val: int) -> None:
         if not (name_other in self.trust_dict):
             self.trust_dict[name_other] = 1
-        self.trust_dict[name_other] += val
+        else:
+            self.trust_dict[name_other] = max(1, self.trust_dict[name_other] +val)
+        logging.debug(f"{self.name} updated trust {name_other} to {self.trust_dict[name_other] } ")
+        return self.trust_dict[name_other] 
 
 
 

@@ -1,8 +1,9 @@
 
-from random import randint
+import random
 from agent.agent import Agent
 from typing import List
 from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single
+import logging
 
 
 class MultiAgentRunner:
@@ -33,8 +34,8 @@ class MultiAgentRunner:
 
     def communicate(self, number_of_communications):
         for agent in self.__agents:
-            for i in range(number_of_communications):
-                agent.communicate(self.__agents[randint(0,len(self.__agents)-1)])
+            for agent2 in random.sample(self.__agents, number_of_communications):
+                agent.communicate(agent2)
 
 
     def run(self, cycles : int, cycle_iter: int, num_of_comm:int):
@@ -43,8 +44,7 @@ class MultiAgentRunner:
             self.communicate(num_of_comm)
 
         self.run_comparison()
-
-       # self.plot_results()
+        self.plot_results()
         
     def plot_results(self):
         problem = self.__agents[0].Island.algorithm.problem

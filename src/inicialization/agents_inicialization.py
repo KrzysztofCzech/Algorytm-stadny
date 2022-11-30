@@ -14,23 +14,23 @@ def create_agents_float_solution(config : ConfigData):
     for i in range(0,config.noAgents):
         Island1 = Island(algorithm=EvolutionAlgoritm(
         problem=config.problem, 
-        population_size=100 -1*i,
-        offspring_population_size= 150 -3*i,
-        mutation=PolynomialMutation(probability=0.5 + 0.03*i / config.problem.number_of_variables, distribution_index=20 +i),
+        population_size=15,
+        offspring_population_size= 30,
+        mutation=PolynomialMutation(probability=0.0005 , distribution_index=30),
         selection= BinaryTournamentSelection(),
-        termination_criterion=StoppingByEvaluations(max_evaluations=100000)))
+        termination_criterion=StoppingByEvaluations(max_evaluations=10000000)))
         Island1.start()
-        Agents.append(Agent(Island1, name= f"Agent{i}", attidute= AttiduteType(i % 3), communication_type=config.commuincationType))
+        Agents.append(Agent(Island1, name= f"Agent{i}", attidute= AttiduteType( 2), communication_type=config.commuincationType))
 
     i = config.noAgents//2
 
     Island2 = Island(algorithm=EvolutionAlgoritm(
     problem=config.problem, 
-    population_size=100 -1*i,
-    offspring_population_size= 150 -3*i,
-    mutation=PolynomialMutation(probability=0.5 + 0.03*i / config.problem.number_of_variables, distribution_index=20 +i),
+    population_size=15 ,
+    offspring_population_size= 30,
+    mutation=PolynomialMutation(probability=0.0005 , distribution_index=40),
     selection= BinaryTournamentSelection(),
-    termination_criterion=StoppingByEvaluations(max_evaluations=100000)))
+    termination_criterion=StoppingByEvaluations(max_evaluations=10000000)))
     Island2.start()
     Agent_Reference = Agent(Island2, name= f"Agent single", attidute= AttiduteType(1), communication_type=config.commuincationType)
 
