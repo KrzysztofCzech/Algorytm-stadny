@@ -3,6 +3,7 @@ from jmetal.problem.singleobjective.unconstrained import Rastrigin
 from communication.types import CommunicationWithMutation, CommunicationCrossover, CommunicationWithMutation_temp1, CommunicationWithMutation_temp2
 from jmetal.operator import SBXCrossover
 from communication.operators import swap_operator, average_operator
+from trust.base_trust import NaiveTrust
 
 def decode_problem(problem_name, problem_size):
     return {"Rastrigin" : Rastrigin(problem_size) }[problem_name]
@@ -16,3 +17,7 @@ def decode_communication(type, operator):
     "crossover": CommunicationCrossover(operator=SBXCrossover(probability=0.04)),
     "temp1": CommunicationWithMutation_temp1(decode_operator(operator)),
     "temp2": CommunicationWithMutation_temp2(decode_operator(operator))}[type]
+
+def decode_trust(type):
+    return {"naive" : NaiveTrust() }[type]
+ 

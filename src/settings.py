@@ -3,13 +3,15 @@ import logging
 from dataclasses import dataclass
 from jmetal.core.problem import Problem
 from communication.types import CommunicationType
-from decoder import decode_problem, decode_communication
+from decoder import decode_problem, decode_communication,decode_trust
+from trust.base_trust import Trust
 
 @dataclass
 class ConfigData:
     noAgents : int
     problem : Problem
     commuincationType: CommunicationType
+    trust_type: Trust
 
 
 class Settings:
@@ -30,5 +32,5 @@ class Settings:
         noAgents = self.json_settings["number_of_agents"]
         problem =  decode_problem(self.json_settings["problem"], self.json_settings["problem_size"])
         communication = decode_communication(self.json_settings["communication_type"], self.json_settings["communication_operator"])
-        return ConfigData(noAgents, problem, communication )
-
+        trust_type =  decode_trust(self.json_settings["trust"])
+        return ConfigData(noAgents, problem, communication, trust_type )

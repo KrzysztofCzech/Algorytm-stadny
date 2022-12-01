@@ -7,5 +7,6 @@
     "communication_type":"temp1",
     "communication_operator": "average",
     "max_time": 800,
-    "enable_plots": true
+    "enable_plots": true,
+    "trust": "naive"
 }
