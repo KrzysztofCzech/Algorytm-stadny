@@ -1,12 +1,14 @@
 from jmetal.problem.singleobjective.unconstrained import Rastrigin
+from problems.problems import Griewank
 
 from communication.types import CommunicationWithMutation, CommunicationCrossover, CommunicationWithMutation_temp1, CommunicationWithMutation_temp2
 from jmetal.operator import SBXCrossover
 from communication.operators import swap_operator, average_operator
-from trust.base_trust import NaiveTrust
+from trust.base_trust import NaiveTrust, GlobalTrust
 
 def decode_problem(problem_name, problem_size):
-    return {"Rastrigin" : Rastrigin(problem_size) }[problem_name]
+    return {"Rastrigin" : Rastrigin(problem_size),
+            "Griewank": Griewank(problem_size) }[problem_name]
 
 def decode_operator(operator):
     return {"swap" : swap_operator,
@@ -19,5 +21,6 @@ def decode_communication(type, operator):
     "temp2": CommunicationWithMutation_temp2(decode_operator(operator))}[type]
 
 def decode_trust(type):
-    return {"naive" : NaiveTrust() }[type]
+    return {"naive" : NaiveTrust,
+            "global":  GlobalTrust}[type]
  

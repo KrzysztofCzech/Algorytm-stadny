@@ -1,8 +1,8 @@
 from copy import copy
 from typing import TypeVar, List
-
+import random
 from jmetal.core.algorithm import EvolutionaryAlgorithm
-from jmetal.core.operator import Mutation
+from jmetal.core.operator import Mutation, Crossover
 from jmetal.core.problem import Problem
 from jmetal.util.evaluator import Evaluator, SequentialEvaluator
 from jmetal.util.generator import Generator, RandomGenerator
@@ -22,6 +22,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
                  offspring_population_size: int,
                  mutation: Mutation,
                  selection: Selection,
+                 crossover: Crossover,
                  termination_criterion: TerminationCriterion,
                  population_generator: Generator = RandomGenerator(),
                  population_evaluator: Evaluator = SequentialEvaluator()):
@@ -38,6 +39,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
         self.population_generator = population_generator
         self.population_evaluator = population_evaluator
+        self.crossover_oparator = crossover
 
         self.termination_criterion = termination_criterion
         self.observable.register(termination_criterion)
@@ -58,9 +60,14 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
     def reproduction(self, population: List[S]) -> List[S]:
         offspring_population = []
         for solution in population:
-            for j in range(int(self.offspring_population_size / len(population))):
+            for j in range(max(1,int(self.offspring_population_size/2 / len(population)))):
                 new_solution = copy(solution)
                 offspring_population.append(self.mutation_operator.execute(new_solution))
+                
+        for i in range(max(5,len(offspring_population)-self.offspring_population_size)):
+            solution1, solution2 = random.sample(population, 2)
+            offspring_population.extend(self.crossover_oparator.execute([copy(solution1), copy(solution2)]))
+
 
         return offspring_population
 
@@ -70,14 +77,10 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
         population_pool = population
         population_pool.extend(offspring_population)
         min2 = min([sol.objectives[0] for sol in population_pool])
-        if min1 < min2:
-            print("one not working")
 
 
         population_pool.sort(key=lambda s:(overall_constraint_violation_degree(s), s.objectives[0]))
         #new_population = self.replacement_operator.execute(population_pool)
-        if population_pool[0].objectives[0] > min2:
-            print("not working two")
         new_population = []
         for i in range(self.population_size):
             new_population.append(population_pool[i])
@@ -87,4 +90,4 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
         return self.solutions[0]
 
     def get_name(self) -> str:
-        return 'Evlolution algorithm'
+        return 'Evolution algorithm'

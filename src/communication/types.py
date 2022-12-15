@@ -30,7 +30,7 @@ class CommunicationCrossover(CommunicationType):
             solutions_new = agent1.get_solutions()
             mean_updated = mean_of_solutions(solutions_new)
             if mean_updated < mean_old:
-                agent1.get_trust_memory().update_trust(agent2.name, 1) 
+                agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1) 
 
 class CommunicationWithMutation(CommunicationType):
     
@@ -49,9 +49,9 @@ class CommunicationWithMutation(CommunicationType):
             solutions_new = agent1.get_solutions()
             mean_updated = mean_of_solutions(solutions_new)
             if mean_updated < mean_old:
-                agent1.get_trust_memory().update_trust(agent2.name, 1)            
+                agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1)            
         else:
-            agent1.get_trust_memory().update_trust(agent2.name, -1)    
+            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)    
 
 class CommunicationWithMutation_temp1(CommunicationType):
     
@@ -70,9 +70,9 @@ class CommunicationWithMutation_temp1(CommunicationType):
             solutions_new = agent1.get_solutions()
             mean_updated = mean_of_solutions(solutions_new)
             if mean_updated < mean_old:
-                agent1.get_trust_memory().update_trust(agent2.name, 1)            
+                agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1)            
         else:
-            agent1.get_trust_memory().update_trust(agent2.name, -1)   
+            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)   
 
 class CommunicationWithMutation_temp2(CommunicationType):
     
@@ -91,9 +91,9 @@ class CommunicationWithMutation_temp2(CommunicationType):
             solutions_new = agent1.get_solutions()
             mean_updated = mean_of_solutions(solutions_new)
             if mean_updated < mean_old:
-                agent1.get_trust_memory().update_trust(agent2.name, 1)            
+                agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1)            
         else:
-            agent1.get_trust_memory().update_trust(agent2.name, -1)     
+            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)     
 
 
 

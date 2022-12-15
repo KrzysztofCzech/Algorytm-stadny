@@ -12,6 +12,8 @@ class ConfigData:
     problem : Problem
     commuincationType: CommunicationType
     trust_type: Trust
+    population_size: int
+    offspring_population: int
 
 
 class Settings:
@@ -33,4 +35,6 @@ class Settings:
         problem =  decode_problem(self.json_settings["problem"], self.json_settings["problem_size"])
         communication = decode_communication(self.json_settings["communication_type"], self.json_settings["communication_operator"])
         trust_type =  decode_trust(self.json_settings["trust"])
-        return ConfigData(noAgents, problem, communication, trust_type )
+        population_size = self.json_settings["population size"]
+        offspring_size = self.json_settings["offspring size"]
+        return ConfigData(noAgents, problem, communication, trust_type , population_size, offspring_size)

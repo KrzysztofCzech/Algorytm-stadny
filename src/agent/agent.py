@@ -1,7 +1,6 @@
 from agent.island import Island
 from communication.types import AttiduteType, get_selector, CommunicationType
 from agent.base_agent import BaseAgent
-import logging
 from trust.base_trust import Trust 
 
 class Agent(BaseAgent):
@@ -11,6 +10,7 @@ class Agent(BaseAgent):
 
     def initalize(self):
         self.Island.clear_data_and_start()
+        self.trust_memory.trust_dict = { }
 
     def run(self, iterations):
         self.Island.run(iterations)

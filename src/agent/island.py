@@ -2,12 +2,15 @@ from dataclasses import dataclass
 import random
 from jmetal import logging 
 from agent.algorithm import EvolutionAlgoritm, S
-
+import numpy as np
 from copy import deepcopy
 
 @dataclass
 class PopulationsData:
-    solution_spread : float    
+    solution_std : float 
+    solutions_mean: np.array
+
+
     
 
 logger = logging.getLogger(__name__)

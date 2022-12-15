@@ -1,12 +1,14 @@
 
 {
     "LOG_LEVEL" : "INFO",
-    "number_of_agents" : 5,
-    "problem":"Rastrigin",
-    "problem_size": 200,
+    "number_of_agents" : 4,
+    "problem":"Griewank",
+    "problem_size": 800,
     "communication_type":"temp1",
     "communication_operator": "average",
     "max_time": 800,
     "enable_plots": true,
-    "trust": "naive"
+    "trust": "global",
+    "population size": 15,
+    "offspring size" : 35
 }
