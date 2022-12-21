@@ -12,8 +12,8 @@ def create_agents_float_solution(config : ConfigData):
     for i in range(0,config.noAgents):
         Island1 = Island(algorithm=EvolutionAlgoritm(
         problem=config.problem, 
-        population_size=15,
-        offspring_population_size= 30,
+        population_size=config.population_size,
+        offspring_population_size= config.offspring_population,
         mutation=PolynomialMutation(probability=0.0005 , distribution_index=40  ),
         selection= BinaryTournamentSelection(),
         crossover=SBXCrossover(probability=0.005),
@@ -25,8 +25,8 @@ def create_agents_float_solution(config : ConfigData):
 
     Island2 = Island(algorithm=EvolutionAlgoritm(
     problem=config.problem, 
-    population_size=15 ,
-    offspring_population_size= 30,
+    population_size=config.population_size,
+    offspring_population_size= config.offspring_population,
     mutation=PolynomialMutation(probability=0.0005 , distribution_index=40),
     selection= BinaryTournamentSelection(),
     crossover=SBXCrossover(probability=0.005),

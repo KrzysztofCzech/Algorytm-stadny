@@ -5,6 +5,7 @@ from utils.plots import boxplot
 from utils.utils import RunData, NumpyArrayEncoder
 import json
 import logging
+from jmetal.util.observer import ProgressBarObserver
 
 
 
@@ -19,8 +20,8 @@ class StatisticRunner:
         for i in range(no_runs):
             self.Executor.initalize()
             self.Executor.run(cycles, cycle_iter, num_of_comm)
-            self.history.add_data(*self.Executor.get_results(),2 , len(self.Executor.get_agents()))
-            logging.debug(f"Run {i} out of {no_runs}")            
+            self.history.add_data(*self.Executor.get_results(),40 , len(self.Executor.get_agents()))
+            logging.info(f"Run {i} out of {no_runs}")            
 
     def save_progres(self, filename = None):
         data = {}

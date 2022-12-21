@@ -1,9 +1,9 @@
 
 {
     "LOG_LEVEL" : "INFO",
-    "number_of_agents" : 4,
+    "number_of_agents" : 5,
     "problem":"Griewank",
-    "problem_size": 800,
+    "problem_size": 100,
     "communication_type":"temp1",
     "communication_operator": "average",
     "max_time": 800,

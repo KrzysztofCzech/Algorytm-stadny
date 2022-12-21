@@ -1,16 +1,19 @@
-from agent.island import Island
+from agent.island import Island, PopulationsData
 from communication.types import AttiduteType, get_selector, CommunicationType
 from agent.base_agent import BaseAgent
 from trust.base_trust import Trust 
+from typing import List
+
 
 class Agent(BaseAgent):
     def __init__ (self,Island:Island, name: str, attidute : AttiduteType, communication_type : CommunicationType, trust_type :  Trust):
         super().__init__(Island, name, attidute, communication_type)
         self.trust_memory = trust_type
 
-    def initalize(self):
+    def initalize(self, observer):
         self.Island.clear_data_and_start()
         self.trust_memory.trust_dict = { }
+        self.Island.algorithm.observable.register(observer)
 
     def run(self, iterations):
         self.Island.run(iterations)
@@ -34,6 +37,9 @@ class Agent(BaseAgent):
 
     def get_trust_memory(self):
         return self.trust_memory
+
+    def get_island_history(self) -> List[PopulationsData]:
+        return self.Island.get_population_data()
 
 
 

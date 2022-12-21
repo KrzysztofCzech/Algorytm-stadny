@@ -10,7 +10,7 @@ class BaseAgent():
 
 
 
-    def initalize(self):
+    def initalize(self, observer):
         raise NotImplementedError()
 
     def run(self, iterations):

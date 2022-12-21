@@ -2,27 +2,32 @@
 import random
 from agent.agent import Agent
 from typing import List
-from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single
-import logging
-
+from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single, draw_debug_plots_agents, draw_debug_plots_summary
+from agent.island import PopulationsData
+import numpy as np
+from jmetal.util.observer import ProgressBarObserver
 
 class MultiAgentRunner:
 
     def __init__(
         self,
         agents: List[Agent],
-        agent_single: Agent
+        agent_single: Agent,
     ):
         self.__agents = agents
         self._agent_single = agent_single
+        self.algorithm_data = []
+        self.observer_multi = ProgressBarObserver(max=10000)
+        self.observer_single = ProgressBarObserver(max=10000)
 
     def get_agents(self):
         return self.__agents
 
     def initalize(self):
+        
         for agent in self.__agents:
-            agent.initalize()
-        self._agent_single.initalize()
+            agent.initalize(self.observer_multi)
+        self._agent_single.initalize(self.observer_single)
 
     
     def add_Agent(self, agent: Agent) -> None:
@@ -43,15 +48,19 @@ class MultiAgentRunner:
             self.run_cycle(cycle_iter)
             self.communicate(num_of_comm)
 
+            self.collect_data()
+
         self.run_comparison()
         self.plot_results()
         
     def plot_results(self):
         problem = self.__agents[0].Island.algorithm.problem
+        describe_string = f"{problem.get_name()} {problem.number_of_variables} variables no agents {len(self.__agents)}"
         x_coord_multi, results_multi, x_coord_single , results_single = self.get_results()
-        draw_comparision_agents_plot(self.__agents, name = "Agent comaprison in multi-agent system ")
-        draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison {problem.get_name()} {problem.number_of_variables} variables")
-
+        draw_comparision_agents_plot(self.__agents, name = f"Agent comaprison Problem" + describe_string)
+        # draw_debug_plots_agents(self.__agents, name = describe_string)
+        draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string)
+        draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison" + describe_string)
 
     def run_comparison(self):
         all_iterations = sum([agent.get_num_of_iteration() for agent in self.__agents])
@@ -69,7 +78,16 @@ class MultiAgentRunner:
                 res_multi[i] = min(res_multi[i], temp[i])
                 x_coord_multi[i] += i
         return x_coord_multi, res_multi, list(range(len(self._agent_single.Island.get_history_soultion()))), self._agent_single.Island.get_history_soultion()
-        
+
+    def collect_data(self):
+        all_islands = [agent.Island for agent in self.__agents]
+        all_solutions = [island.algorithm.solutions for island  in all_islands]
+        spread = max(max([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions])) -  min(min([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions]))
+        solution_array  = np.array([[sol.variables for sol in sol_row] for sol_row in all_solutions])
+        std = np.mean(np.std(solution_array, axis=0))
+        means_sol = np.mean(solution_array, axis=0)
+        population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
+        self.algorithm_data.append(population)      
 
         
         
