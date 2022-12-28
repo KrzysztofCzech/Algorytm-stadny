@@ -6,6 +6,8 @@ from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and
 from agent.island import PopulationsData
 import numpy as np
 from jmetal.util.observer import ProgressBarObserver
+import logging
+import time 
 
 class MultiAgentRunner:
 
@@ -13,12 +15,13 @@ class MultiAgentRunner:
         self,
         agents: List[Agent],
         agent_single: Agent,
+        max_iterations: int
     ):
         self.__agents = agents
         self._agent_single = agent_single
         self.algorithm_data = []
-        self.observer_multi = ProgressBarObserver(max=10000)
-        self.observer_single = ProgressBarObserver(max=10000)
+        self.observer_multi = ProgressBarObserver(max=max_iterations)
+        self.observer_single = ProgressBarObserver(max=max_iterations)
 
     def get_agents(self):
         return self.__agents
@@ -44,22 +47,34 @@ class MultiAgentRunner:
 
 
     def run(self, cycles : int, cycle_iter: int, num_of_comm:int):
+        logging.info("Socjo started")
+        time1 = time.time()
         for i in range(cycles):
             self.run_cycle(cycle_iter)
-            self.communicate(num_of_comm)
-
             self.collect_data()
 
+            self.communicate(num_of_comm)
+            self.collect_data()
+
+
+        logging.info(f"Socjo finished in {(time.time() - time1)/60}")
+        time1 = time.time()
         self.run_comparison()
-        self.plot_results()
+        logging.info(f"comparison finished in {(time.time() - time1)/60}")
+        time1 = time.time()
+        self.plot_results(cycle_iter)
+        logging.info(f"plotting finished in {(time.time() - time1)/60}")
         
-    def plot_results(self):
+
+        
+    def plot_results(self, cycle_iter):
         problem = self.__agents[0].Island.algorithm.problem
         describe_string = f"{problem.get_name()} {problem.number_of_variables} variables no agents {len(self.__agents)}"
         x_coord_multi, results_multi, x_coord_single , results_single = self.get_results()
+        logging.info(f"best socjo {results_multi[-1]} best single {results_single[-1]}")
         draw_comparision_agents_plot(self.__agents, name = f"Agent comaprison Problem" + describe_string)
-        # draw_debug_plots_agents(self.__agents, name = describe_string)
-        draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string)
+        draw_debug_plots_agents(self.__agents, name = describe_string)
+        draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string, cycle_iter = cycle_iter)
         draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison" + describe_string)
 
     def run_comparison(self):

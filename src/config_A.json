@@ -2,13 +2,13 @@
 {
     "LOG_LEVEL" : "INFO",
     "number_of_agents" : 5,
-    "problem":"Griewank",
-    "problem_size": 70,
-    "communication_type":"temp1",
+    "problem":"Ackley",
+    "problem_size": 100,
+    "communication_type":"temp2",
     "communication_operator": "average",
     "max_time": 800,
     "enable_plots": true,
     "trust": "global",
-    "population size": 15,
-    "offspring size" : 35
+    "population size": 5,
+    "offspring size" : 15
 }

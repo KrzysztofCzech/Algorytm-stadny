@@ -55,13 +55,13 @@ class Island():
         best_fitness = self.algorithm.solutions[0].objectives[0]
         self.history_solution.append(best_fitness)
         
-        # spread = max([sol.objectives[0] for sol in self.algorithm.solutions]) -  min([sol.objectives[0] for sol in self.algorithm.solutions])
-        # solution_array  = np.array([sol.variables for sol in self.algorithm.solutions])
+        spread = max([sol.objectives[0] for sol in self.algorithm.solutions]) -  min([sol.objectives[0] for sol in self.algorithm.solutions])
+        solution_array  = np.array([sol.variables for sol in self.algorithm.solutions])
 
-        # std = np.mean(np.std(solution_array, axis=0))
-        # means_sol = np.mean(solution_array, axis=0)
-        # self.populationData = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
-        # self.history_population.append(self.populationData)
+        std = np.mean(np.std(solution_array, axis=0))
+        means_sol = np.mean(solution_array, axis=0)
+        self.populationData = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
+        self.history_population.append(self.populationData)
 
     def get_history_soultion(self):
         return self.history_solution

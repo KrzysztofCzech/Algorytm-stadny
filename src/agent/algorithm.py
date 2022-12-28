@@ -73,17 +73,15 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
     def replacement(self, population: List[S], offspring_population: List[S]) -> List[S]:
         population_pool = []
-        min1 = min([sol.objectives[0] for sol in population])
         population_pool = population
         population_pool.extend(offspring_population)
-        min2 = min([sol.objectives[0] for sol in population_pool])
 
 
         population_pool.sort(key=lambda s:(overall_constraint_violation_degree(s), s.objectives[0]))
         #new_population = self.replacement_operator.execute(population_pool)
-        new_population = []
-        for i in range(self.population_size):
-            new_population.append(population_pool[i])
+        new_population = [population_pool[0]]
+        for i in range(self.population_size - 1):
+            new_population.append(self.selection_operator.execute(population_pool[1:]))
         return new_population
 
     def get_result(self) -> R:

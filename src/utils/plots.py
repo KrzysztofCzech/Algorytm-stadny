@@ -60,7 +60,6 @@ def draw_debug_plots_agents(Agents_list : List[Agent], name :  str):
     alg1 = Agents_list[0].Island.algorithm
     plt.legend([agent.name for agent in Agents_list])
     plt.title(f"Std of population problem {alg1.problem.get_name()} with {alg1.problem.number_of_variables} variables")
-    plt.yscale('log')
     plt.xlabel("Number of iterations")
     plt.ylabel("Standard deviation of population")
     date = strftime("%Y-%m-%d %H%M%S")
@@ -77,7 +76,7 @@ def draw_debug_plots_agents(Agents_list : List[Agent], name :  str):
     plt.show()
 
 
-def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:List[Agent], name :  str):
+def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:List[Agent], name :  str, cycle_iter:int):
     solutions_std = []
     solutions_spread = []
 
@@ -86,17 +85,16 @@ def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:
         solutions_spread.append(el.solution_spread)
     
     plt.figure(1)
-    plt.plot(range(len(solutions_std)), solutions_std)
+    plt.plot([i*cycle_iter for i in range(len(solutions_std))], solutions_std)
     alg1 = Agents_list[0].Island.algorithm
     plt.title(f"Std of all population problem {alg1.problem.get_name()} with {alg1.problem.number_of_variables} variables")
-    plt.yscale('log')
     plt.xlabel("Number of iterations")
     plt.ylabel("Standard deviation of population")
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"Standard deviation {name}_{date}).jpg"))
 
     plt.figure(2)
-    plt.plot(range(len(solutions_spread)), solutions_spread)
+    plt.plot([i*cycle_iter for i in range(len(solutions_spread))], solutions_spread)
     alg1 = Agents_list[0].Island.algorithm
     plt.title(f"Spread of all population problem {alg1.problem.get_name()} with {alg1.problem.number_of_variables} variables")
     plt.xlabel("Number of iterations")
