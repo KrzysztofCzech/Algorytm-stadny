@@ -50,8 +50,9 @@ class MultiAgentRunner:
         logging.info("Socjo started")
         time1 = time.time()
         for i in range(cycles):
-            self.run_cycle(cycle_iter)
-            self.collect_data()
+            for j in range(cycle_iter):
+                self.run_cycle(1)
+                self.collect_data()
 
             self.communicate(num_of_comm)
             self.collect_data()
@@ -62,7 +63,7 @@ class MultiAgentRunner:
         self.run_comparison()
         logging.info(f"comparison finished in {(time.time() - time1)/60}")
         time1 = time.time()
-        self.plot_results(cycle_iter)
+        self.plot_results(1)
         logging.info(f"plotting finished in {(time.time() - time1)/60}")
         
 

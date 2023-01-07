@@ -15,7 +15,7 @@ def draw_comparision_agents_plot(Agents_list : List[Agent], name :  str):
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"{name}_{date}).jpg"))
+    plt.savefig(os.path.join('../figs', f"{name}_{date}).png"))
     plt.show()
 
 def draw_comparisson_multi_and_single(x_coord_multi, res_multi, x_coord_single , results_single, name: str):
@@ -28,7 +28,7 @@ def draw_comparisson_multi_and_single(x_coord_multi, res_multi, x_coord_single ,
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"{name}_{date}.jpg"))
+    plt.savefig(os.path.join('../figs', f"{name}_{date}.png"))
     plt.show()
 
 def boxplot(series, positions, title):
@@ -37,7 +37,7 @@ def boxplot(series, positions, title):
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"{title}_{date}.jpg"))
+    plt.savefig(os.path.join('../figs', f"{title}_{date}.png"))
     plt.show()
 
 def draw_debug_plots_agents(Agents_list : List[Agent], name :  str):
@@ -63,7 +63,7 @@ def draw_debug_plots_agents(Agents_list : List[Agent], name :  str):
     plt.xlabel("Number of iterations")
     plt.ylabel("Standard deviation of population")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"Standard deviation {name}_{date}).jpg"))
+    plt.savefig(os.path.join('../figs', f"Standard deviation {name}_{date}).png"))
 
     plt.figure(2)
     alg1 = Agents_list[0].Island.algorithm
@@ -72,7 +72,7 @@ def draw_debug_plots_agents(Agents_list : List[Agent], name :  str):
     plt.xlabel("Number of iterations")
     plt.ylabel("Spread")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"Spread of population {name}_{date}).jpg"))
+    plt.savefig(os.path.join('../figs', f"Spread of population {name}_{date}).png"))
     plt.show()
 
 
@@ -91,7 +91,7 @@ def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:
     plt.xlabel("Number of iterations")
     plt.ylabel("Standard deviation of population")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"Standard deviation {name}_{date}).jpg"))
+    plt.savefig(os.path.join('../figs', f"Standard deviation {name}_{date}).png"))
 
     plt.figure(2)
     plt.plot([i*cycle_iter for i in range(len(solutions_spread))], solutions_spread)
@@ -100,5 +100,5 @@ def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:
     plt.xlabel("Number of iterations")
     plt.ylabel("Spread")
     date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"Spread of population {name}_{date}).jpg"))
+    plt.savefig(os.path.join('../figs', f"Spread of population {name}_{date}).png"))
     plt.show()
