@@ -4,6 +4,7 @@ from typing import List
 from agent.agent import Agent
 from time import strftime
 from agent.island import PopulationsData
+import numpy as np
 
 
 def draw_comparision_agents_plot(Agents_list : List[Agent], name :  str):
@@ -101,4 +102,29 @@ def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:
     plt.ylabel("Spread")
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"Spread of population {name}_{date}).png"))
+    plt.show()
+
+
+def draw_histogram_of_communication(communication_hisotry : List[PopulationsData]):
+    solutions_std = []
+    solutions_spread = []
+
+    for popultaion in communication_hisotry:
+        solutions_spread.append(popultaion.solution_spread)
+        solutions_std.append(popultaion.solution_std)
+
+    solutions_spread = np.array(solutions_spread)
+    solutions_std = np.array(solutions_std)
+    plt.hist(solutions_std, bins=200)  
+    plt.ylabel('Probability')
+    plt.xlabel('Std of 2 polutions duting algotithm')
+    date = strftime("%Y-%m-%d %H%M%S")
+    plt.savefig(os.path.join('../figs', f"Std of 2 polutions duting algotithm {date}.png"))
+    plt.show()
+
+    plt.hist(solutions_spread, bins=200)  
+    plt.ylabel('Probability')
+    plt.xlabel('Spread of 2 polutions duting algotithm')
+    date = strftime("%Y-%m-%d %H%M%S")
+    plt.savefig(os.path.join('../figs', f"Spread of 2 polutions duting algotithm {date}.png"))
     plt.show()

@@ -2,12 +2,19 @@
 import random
 from agent.agent import Agent
 from typing import List
-from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single, draw_debug_plots_agents, draw_debug_plots_summary
+from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single, draw_debug_plots_agents, draw_debug_plots_summary, draw_histogram_of_communication
 from agent.island import PopulationsData
 import numpy as np
 from jmetal.util.observer import ProgressBarObserver
 import logging
 import time 
+
+def calc_spread_and_std(all_solutions):
+    spread = max(max([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions])) -  min(min([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions]))
+    solution_array  = np.array([[sol.variables for sol in sol_row] for sol_row in all_solutions])
+    std = np.mean(np.std(solution_array, axis=0))
+    means_sol = np.mean(solution_array, axis=0)
+    return spread, std, means_sol
 
 class MultiAgentRunner:
 
@@ -20,6 +27,7 @@ class MultiAgentRunner:
         self.__agents = agents
         self._agent_single = agent_single
         self.algorithm_data = []
+        self.comunication_history = []
         self.observer_multi = ProgressBarObserver(max=max_iterations)
         self.observer_single = ProgressBarObserver(max=max_iterations)
 
@@ -43,6 +51,13 @@ class MultiAgentRunner:
     def communicate(self, number_of_communications):
         for agent in self.__agents:
             for agent2 in random.sample(self.__agents, number_of_communications):
+                if agent == agent2:
+                    continue
+                soultions = [agent.Island.algorithm.solutions, agent2.Island.algorithm.solutions]
+                spread, std, means_sol = calc_spread_and_std(soultions)
+                population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
+                self.comunication_history.append(population)      
+                
                 agent.communicate(agent2)
 
 
@@ -77,6 +92,7 @@ class MultiAgentRunner:
         draw_debug_plots_agents(self.__agents, name = describe_string)
         draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string, cycle_iter = cycle_iter)
         draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison" + describe_string)
+        draw_histogram_of_communication(self.comunication_history)
 
     def run_comparison(self):
         all_iterations = sum([agent.get_num_of_iteration() for agent in self.__agents])
@@ -98,10 +114,8 @@ class MultiAgentRunner:
     def collect_data(self):
         all_islands = [agent.Island for agent in self.__agents]
         all_solutions = [island.algorithm.solutions for island  in all_islands]
-        spread = max(max([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions])) -  min(min([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions]))
-        solution_array  = np.array([[sol.variables for sol in sol_row] for sol_row in all_solutions])
-        std = np.mean(np.std(solution_array, axis=0))
-        means_sol = np.mean(solution_array, axis=0)
+
+        spread, std, means_sol = calc_spread_and_std(all_solutions)
         population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
         self.algorithm_data.append(population)      
 
