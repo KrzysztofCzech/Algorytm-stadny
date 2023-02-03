@@ -5,11 +5,13 @@ from agent.algorithm import EvolutionAlgoritm, S
 import numpy as np
 from copy import deepcopy
 from typing import List
+
 @dataclass
 class PopulationsData:
     solution_spread: float
     solution_std : float 
     solution_mean: np.array
+    result: bool = None
 
 
     

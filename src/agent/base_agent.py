@@ -1,8 +1,9 @@
 from agent.island import Island
 from trust.base_trust import Trust
+from primitives.primitiveTypes import CommunicationType
 
 class BaseAgent():
-    def __init__ (self,Island:Island, name: str, attidute, communication_type):
+    def __init__ (self,Island:Island, name: str, attidute, communication_type : CommunicationType):
         self.Island = Island
         self.name = name
         self.attidute = attidute

@@ -55,10 +55,12 @@ class MultiAgentRunner:
                     continue
                 soultions = [agent.Island.algorithm.solutions, agent2.Island.algorithm.solutions]
                 spread, std, means_sol = calc_spread_and_std(soultions)
-                population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
-                self.comunication_history.append(population)      
                 
-                agent.communicate(agent2)
+                res = agent.communicate(agent2)
+                population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol, result= res)
+                self.comunication_history.append(population)      
+
+
 
 
     def run(self, cycles : int, cycle_iter: int, num_of_comm:int):

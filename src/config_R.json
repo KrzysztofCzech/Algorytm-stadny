@@ -1,9 +1,9 @@
 
 {
     "LOG_LEVEL" : "INFO",
-    "number_of_agents" : 5,
+    "number_of_agents" : 10,
     "problem":"Rastrigin",
-    "problem_size": 100,
+    "problem_size": 90,
     "communication_type":"temp2",
     "communication_operator": "average",
     "max_time": 800,

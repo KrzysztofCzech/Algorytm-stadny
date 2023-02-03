@@ -1,9 +1,9 @@
 from agent.island import Island, PopulationsData
-from communication.types import AttiduteType, get_selector, CommunicationType
+from communication.types import AttiduteType, get_selector
 from agent.base_agent import BaseAgent
 from trust.base_trust import Trust 
 from typing import List
-
+from primitives.primitiveTypes import CommunicationType
 
 class Agent(BaseAgent):
     def __init__ (self,Island:Island, name: str, attidute : AttiduteType, communication_type : CommunicationType, trust_type :  Trust):
@@ -29,8 +29,8 @@ class Agent(BaseAgent):
         selector = get_selector(self.attidute)
         return selector(trust_level, self.get_solutions())
 
-    def communicate(self, obj):
-        self.communication.comunnicate(self, obj)
+    def communicate(self, obj) -> bool:
+        return self.communication.comunnicate(self, obj)
 
     def get_num_of_iteration(self):
         return len(self.Island.get_history_soultion())

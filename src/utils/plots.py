@@ -105,26 +105,55 @@ def draw_debug_plots_summary(algorithm_data: List[PopulationsData], Agents_list:
     plt.show()
 
 
+
 def draw_histogram_of_communication(communication_hisotry : List[PopulationsData]):
+
+    def historgram_from_data(data, bins, xlabel, ylabel, title):
+        plt.hist(data, bins=bins)  
+        plt.ylabel(ylabel)
+        plt.xlabel(xlabel)
+        date = strftime("%Y-%m-%d %H%M%S")
+        plt.title(title)
+        plt.savefig(os.path.join('../figs', f"{title} {date}.png"))
+        plt.show()
     solutions_std = []
     solutions_spread = []
+    solutions_std_true = []
+    solutions_spread_true = []
+    solutions_std_false = []
+    solutions_spread_false = []
 
     for popultaion in communication_hisotry:
         solutions_spread.append(popultaion.solution_spread)
         solutions_std.append(popultaion.solution_std)
 
+        if popultaion.result == True:
+
+            solutions_spread_true.append(popultaion.solution_spread)
+            solutions_std_true.append(popultaion.solution_std)
+
+        else:
+            solutions_spread_false.append(popultaion.solution_spread)
+            solutions_std_false.append(popultaion.solution_std)
+
+
+
     solutions_spread = np.array(solutions_spread)
     solutions_std = np.array(solutions_std)
-    plt.hist(solutions_std, bins=200)  
-    plt.ylabel('Probability')
-    plt.xlabel('Std of 2 polutions duting algotithm')
-    date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"Std of 2 polutions duting algotithm {date}.png"))
-    plt.show()
 
-    plt.hist(solutions_spread, bins=200)  
-    plt.ylabel('Probability')
-    plt.xlabel('Spread of 2 polutions duting algotithm')
-    date = strftime("%Y-%m-%d %H%M%S")
-    plt.savefig(os.path.join('../figs', f"Spread of 2 polutions duting algotithm {date}.png"))
-    plt.show()
+    historgram_from_data(solutions_std, 200, 'Std of 2 populations duting algotithm', 'Amount of communication', 'Std of 2 populations duting algotithm')
+    historgram_from_data(solutions_spread, 200, 'Spread of 2 populations duting algotithm', 'Amount of communication', 'Spread of 2 populations duting algotithm')
+
+    solutions_spread_true = np.array(solutions_spread_true)
+    solutions_std_true = np.array(solutions_std_true)
+
+    historgram_from_data(solutions_std_true, 200, 'Std of 2 populations duting algotithm', 'Amount of communication', 'Positive communication')
+    historgram_from_data(solutions_spread_true, 200, 'Spread of 2 populations duting algotithm', 'Amount of communication', 'Positive communication')
+
+    solutions_spread_false = np.array(solutions_spread_false)
+    solutions_std_false = np.array(solutions_std_false)
+
+    historgram_from_data(solutions_std_false, 200, 'Std of 2 populations duting algotithm', 'Amount of communication', 'Negative communication')
+    historgram_from_data(solutions_spread_false, 200, 'Spread of 2 populations duting algotithm', 'Amount of communication', 'Negative communication')
+
+
