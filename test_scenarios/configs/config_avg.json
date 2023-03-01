@@ -1,0 +1,11 @@
+
+{
+    "LOG_LEVEL" : "INFO",
+    "number_of_agents" : 10,
+    "problem":"Rastrigin",
+    "problem_size": 120,
+    "communication_type":"mutation",
+    "communication_operator": "average",
+    "max_time": 800,
+    "enable_plots": true
+}
