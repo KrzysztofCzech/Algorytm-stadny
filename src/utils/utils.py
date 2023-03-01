@@ -12,8 +12,7 @@ class NumpyArrayEncoder(JSONEncoder):
         return JSONEncoder.default(self, obj)
 
 
-def prepare_array(array, sampling):
-    return [array[0]]+ array[::sampling] 
+
 class RunData:
     def __init__(self):
         self.x_coor_multi = np.array([])
@@ -21,17 +20,21 @@ class RunData:
         self.x_coor_single = np.array([])
         self.results_single = np.array([])
 
-    def add_data(self, x_coor_multi, results_multi, x_coor_single, results_single, sampling_iter, no_agents):
+    def prepare_array(self,array, sampling):
+        return np.array(array[::sampling] + [array[-1]])
+
+    def add_data(self, x_coor_multi, results_multi, x_coor_single, results_single, no_points, no_agents):
+        sampling = no_points *10
         if self.x_coor_multi.any():
-            self.x_coor_multi = np.vstack((self.x_coor_multi, np.array(prepare_array(x_coor_multi, sampling_iter))))
-            self.results_multi = np.vstack((self.results_multi, np.array(prepare_array(results_multi, sampling_iter))))
-            self.x_coor_single = np.vstack((self.x_coor_single, np.array(prepare_array(x_coor_single, sampling_iter * no_agents))))
-            self.results_single = np.vstack((self.results_single, np.array(prepare_array(results_single, sampling_iter * no_agents))))
+            self.x_coor_multi = np.vstack((self.x_coor_multi, self.prepare_array(x_coor_multi, sampling)))
+            self.results_multi = np.vstack((self.results_multi, self.prepare_array(results_multi, sampling)))
+            self.x_coor_single = np.vstack((self.x_coor_single, self.prepare_array(x_coor_single, sampling * no_agents)))
+            self.results_single = np.vstack((self.results_single, self.prepare_array(results_single, sampling * no_agents)))
         else:
-            self.x_coor_multi = np.array(prepare_array(x_coor_multi, sampling_iter))
-            self.results_multi = np.array(prepare_array(results_multi, sampling_iter))
-            self.x_coor_single = np.array(prepare_array(x_coor_single, sampling_iter * no_agents))
-            self.results_single = np.array(prepare_array(results_single, sampling_iter * no_agents))
+            self.x_coor_multi = self.prepare_array(x_coor_multi, sampling)
+            self.results_multi = self.prepare_array(results_multi, sampling)
+            self.x_coor_single = self.prepare_array(x_coor_single, sampling * no_agents)
+            self.results_single = self.prepare_array(results_single, sampling * no_agents)
 
 def mean_of_solutions(solutions : List[Solution]):
     return mean([solution.objectives[0] for solution in solutions])

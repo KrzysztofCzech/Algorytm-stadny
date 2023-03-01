@@ -15,8 +15,8 @@ class Griewank(FloatProblem):
         self.obj_directions = [self.MINIMIZE]
         self.obj_labels = ['f(x)']
 
-        self.lower_bound = [-500 for _ in range(number_of_variables)]
-        self.upper_bound = [500 for _ in range(number_of_variables)]
+        self.lower_bound = [-100 for _ in range(number_of_variables)]
+        self.upper_bound = [100 for _ in range(number_of_variables)]
 
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
@@ -69,3 +69,141 @@ class Ackley(FloatProblem):
 
     def get_name(self) -> str:
         return 'Ackley'
+
+class ExpandedShaffer(FloatProblem):
+
+    def __init__(self, number_of_variables: int = 10):
+        super(ExpandedShaffer, self).__init__()
+        self.number_of_objectives = 1
+        self.number_of_variables = number_of_variables
+        self.number_of_constraints = 0
+
+        self.obj_directions = [self.MINIMIZE]
+        self.obj_labels = ['f(x)']
+
+        self.lower_bound = [-100 for _ in range(number_of_variables)]
+        self.upper_bound = [100 for _ in range(number_of_variables)]
+
+        FloatSolution.lower_bound = self.lower_bound
+        FloatSolution.upper_bound = self.upper_bound
+
+    def g(self, x, y):
+        up = math.pow(math.sin(math.sqrt(x**2 + y**2)),2 ) - 0.5
+        down = math.pow(1 + 0.001*(x**2+y**2),2)
+        return up/down
+
+    def evaluate(self, solution: FloatSolution) -> FloatSolution:
+
+        x = solution.variables
+        sum = 0 
+        for i in range(solution.number_of_variables):
+            sum += self.g(x[i], x[(i+1)% solution.number_of_variables])
+        solution.objectives[0] = sum
+        return solution
+
+    def get_name(self) -> str:
+        return 'ExpandedShaffer'
+
+class LenardJohnesMinimumEnergyCluster(FloatProblem):
+
+    def __init__(self, number_of_variables: int = 10):
+        super(LenardJohnesMinimumEnergyCluster, self).__init__()
+        self.number_of_objectives = 1
+        self.number_of_variables = number_of_variables
+        self.number_of_constraints = 0
+
+        self.obj_directions = [self.MINIMIZE]
+        self.obj_labels = ['f(x)']
+
+        self.lower_bound = [-20 for _ in range(number_of_variables)]
+        self.upper_bound = [20 for _ in range(number_of_variables)]
+
+        FloatSolution.lower_bound = self.lower_bound
+        FloatSolution.upper_bound = self.upper_bound
+
+    def d(self, i , j, variables):
+        sum_k  = 0
+        for k in range(3):
+            
+            sum_k += math.pow(variables[3 * i + k - 2] - variables[3*j+k-2], 2)
+        return math.pow(sum_k,3)
+
+
+    def evaluate(self, solution: FloatSolution) -> FloatSolution:
+
+        x = solution.variables
+        sum = 12.7120622568
+        sum_j = 0
+        for i in range((solution.number_of_variables-2)//3):
+            for j in range(i+1, self.number_of_variables//3):
+                d_tmp = self.d(i,j,x)
+                sum_j += (1/math.pow(d_tmp,2)) - 2/d_tmp
+            sum  += sum_j
+        solution.objectives[0] = sum
+        return solution
+
+    def get_name(self) -> str:
+        return 'LenardJohnesMinimumEnergyCluster'
+
+
+class BentCigar(FloatProblem):
+
+    def __init__(self, number_of_variables: int = 10):
+        super(BentCigar, self).__init__()
+        self.number_of_objectives = 1
+        self.number_of_variables = number_of_variables
+        self.number_of_constraints = 0
+
+        self.obj_directions = [self.MINIMIZE]
+        self.obj_labels = ['f(x)']
+
+        self.lower_bound = [-100 for _ in range(number_of_variables)]
+        self.upper_bound = [100 for _ in range(number_of_variables)]
+
+        FloatSolution.lower_bound = self.lower_bound
+        FloatSolution.upper_bound = self.upper_bound
+
+
+
+    def evaluate(self, solution: FloatSolution) -> FloatSolution:
+
+        x = solution.variables
+        sum =0
+        for i in range(1,solution.number_of_variables):
+            sum  += x[i] * x[i]
+        solution.objectives[0] = sum *  10**6 + x[0]*x[0]
+        return solution
+
+    def get_name(self) -> str:
+        return 'BentCigar'
+
+class Discus(FloatProblem):
+
+    def __init__(self, number_of_variables: int = 10):
+        super(Discus, self).__init__()
+        self.number_of_objectives = 1
+        self.number_of_variables = number_of_variables
+        self.number_of_constraints = 0
+
+        self.obj_directions = [self.MINIMIZE]
+        self.obj_labels = ['f(x)']
+
+        self.lower_bound = [-100 for _ in range(number_of_variables)]
+        self.upper_bound = [100 for _ in range(number_of_variables)]
+
+        FloatSolution.lower_bound = self.lower_bound
+        FloatSolution.upper_bound = self.upper_bound
+
+
+
+    def evaluate(self, solution: FloatSolution) -> FloatSolution:
+
+        x = solution.variables
+        sum =0
+        for i in range(1,solution.number_of_variables):
+            sum  += x[i] * x[i]
+        solution.objectives[0] = sum +  10**6 * x[0]*x[0]
+        return solution
+
+    def get_name(self) -> str:
+        return 'Discus'

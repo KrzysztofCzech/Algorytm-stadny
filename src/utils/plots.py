@@ -41,6 +41,16 @@ def boxplot(series, positions, title):
     plt.savefig(os.path.join('../figs', f"{title}_{date}.png"))
     plt.show()
 
+def boxplot_comparison(series1, positions1,series2, positions2, title):
+    plt.boxplot(series1, positions=positions1)
+    plt.boxplot(series2, positions=positions2)
+    plt.title(title)
+    plt.xlabel("Number of iterations")
+    plt.ylabel("Objective value")
+    date = strftime("%Y-%m-%d %H%M%S")
+    plt.savefig(os.path.join('../figs', f"{title}_{date}.png"))
+    plt.show()
+
 def draw_debug_plots_agents(Agents_list : List[Agent], name :  str):
     plt.figure(1)
     plt.figure(2)

@@ -30,7 +30,7 @@ def create_agents_float_solution(config : ConfigData):
     mutation=PolynomialMutation(probability=0.0005 , distribution_index=40),
     selection= BinaryTournamentSelection(),
     crossover=SBXCrossover(probability=0.005),
-    termination_criterion=StoppingByEvaluations(max_evaluations=10000000)))
+    termination_criterion=StoppingByEvaluations(max_evaluations=1000000000)))
     Island2.start()
     Agent_Reference = Agent(Island2, name= f"Agent single", attidute= AttiduteType(1), communication_type=config.commuincationType, trust_type=config.trust_type)
 

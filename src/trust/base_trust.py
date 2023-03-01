@@ -56,8 +56,8 @@ class Singleton(type):
 class GlobalTrust(Trust, metaclass=Singleton):
     def __init__(self):
         super().__init__()
-        self.max_trust = 20
-        self.starting_trust = 6
+        self.max_trust = 30
+        self.starting_trust = 10
 
     def update_trust(self,name_self, name_other: str, val: int) -> None:
         if not (name_other in self.trust_dict):

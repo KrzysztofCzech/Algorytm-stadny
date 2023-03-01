@@ -5,6 +5,7 @@ from jmetal.core.problem import Problem
 from communication.types import CommunicationType
 from decoder import decode_problem, decode_communication,decode_trust
 from trust.base_trust import Trust
+import dataclasses
 
 @dataclass
 class ConfigData:
@@ -14,6 +15,9 @@ class ConfigData:
     trust_type: Trust
     population_size: int
     offspring_population: int
+
+    def as_dict(self):
+        return dataclasses.asdict(self)
 
 
 class Settings:
