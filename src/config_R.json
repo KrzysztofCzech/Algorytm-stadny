@@ -9,6 +9,6 @@
     "max_time": 800,
     "enable_plots": true,
     "trust": "global",
-    "population size": 5,
-    "offspring size" : 15
+    "population size": 10,
+    "offspring size" : 30
 }

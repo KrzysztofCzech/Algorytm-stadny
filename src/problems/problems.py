@@ -87,9 +87,9 @@ class ExpandedShaffer(FloatProblem):
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
 
-    def g(self, x, y):
-        up = math.pow(math.sin(math.sqrt(x**2 + y**2)),2 ) - 0.5
-        down = math.pow(1 + 0.001*(x**2+y**2),2)
+    def g(self, sum_x2_y2):
+        up = math.pow(math.sin(math.sqrt(sum_x2_y2)),2 ) - 0.5
+        down = math.pow(1 + 0.001*(sum_x2_y2),2)
         return up/down
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
@@ -97,7 +97,7 @@ class ExpandedShaffer(FloatProblem):
         x = solution.variables
         sum = 0 
         for i in range(solution.number_of_variables):
-            sum += self.g(x[i], x[(i+1)% solution.number_of_variables])
+            sum += self.g(x[i]**2 + x[(i+1)% solution.number_of_variables]**2)
         solution.objectives[0] = sum
         return solution
 
