@@ -32,15 +32,15 @@ class Island():
     def start(self,seed =None):
         if seed is not None:
             random.seed(seed)
-        self.algorithm.solutions = self.algorithm.create_initial_solutions()
-        self.algorithm.solutions = self.algorithm.evaluate(self.algorithm.solutions)
-
+        self.algorithm.solutions = self.algorithm.evaluate(self.algorithm.create_initial_solutions())
         self.algorithm.init_progress()
 
         self.history_population = []
         self.history_solution = []
 
-    
+    def restart_from_random_place(self):
+        self.algorithm.solutions = self.algorithm.evaluate(self.algorithm.create_initial_solutions())
+
     def run(self,iterations):
         for i in range(0,iterations):
             if self.algorithm.stopping_condition_is_met():

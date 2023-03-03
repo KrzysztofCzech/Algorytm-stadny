@@ -30,12 +30,16 @@ class MultiAgentRunner:
         self.comunication_history = []
         self.observer_multi = ProgressBarObserver(max=max_iterations)
         self.observer_single = ProgressBarObserver(max=max_iterations)
+        self.debug = False
+        self._deleted_agents = []
 
     def get_agents(self):
         return self.__agents
+    
+    def set_debug(self, debug : bool):
+        self.debug = debug
 
     def initalize(self):
-        
         for agent in self.__agents:
             agent.initalize(self.observer_multi)
         self._agent_single.initalize(self.observer_single)
@@ -58,7 +62,11 @@ class MultiAgentRunner:
                 
                 res = agent.communicate(agent2)
                 population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol, result= res)
-                self.comunication_history.append(population)      
+                self.comunication_history.append(population)
+                if spread < 0.2 and res == False and spread < 10:
+                    agent.random_restart()
+                    break
+
 
 
 

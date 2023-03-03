@@ -40,6 +40,9 @@ class Agent(BaseAgent):
 
     def get_island_history(self) -> List[PopulationsData]:
         return self.Island.get_population_data()
+    
+    def random_restart(self):
+        self.Island.restart_from_random_place()
 
 
 

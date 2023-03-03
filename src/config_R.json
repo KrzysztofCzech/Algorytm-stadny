@@ -10,5 +10,6 @@
     "enable_plots": true,
     "trust": "global",
     "population size": 5,
-    "offspring size" : 15
+    "offspring size" : 15,
+    "delete agents": true
 }

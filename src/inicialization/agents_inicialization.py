@@ -4,10 +4,10 @@ from jmetal.util.termination_criterion import StoppingByEvaluations
 from agent.island import Island
 from agent.agent import Agent
 from communication.types import AttiduteType
-from settings import ConfigData
+from settings import AgentConfigData
 
 
-def create_agents_float_solution(config : ConfigData):
+def create_agents_float_solution(config : AgentConfigData):
     Agents =  []
     for i in range(0,config.noAgents):
         Island1 = Island(algorithm=EvolutionAlgoritm(

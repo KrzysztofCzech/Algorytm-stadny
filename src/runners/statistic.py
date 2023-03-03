@@ -18,6 +18,11 @@ class StatisticRunner:
     def __init__(self, MultiAgentRunner: MultiAgentRunner):
         self.Executor = MultiAgentRunner
         self.history = RunData()
+        self.debug = False
+
+    def set_debug(self, debug: bool):
+        self.debug = debug
+        self.Executor.set_debug(debug)
 
     def run_an_collect_data(self, no_runs : int,cycles, cycle_iter, num_of_comm):
         for i in range(no_runs):

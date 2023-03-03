@@ -8,7 +8,7 @@ from trust.base_trust import Trust
 import dataclasses
 
 @dataclass
-class ConfigData:
+class AgentConfigData:
     noAgents : int
     problem : Problem
     commuincationType: CommunicationType
@@ -30,6 +30,7 @@ class Settings:
         self.maxtime = self.json_settings["max_time"]
         self.agents_data = self.decodeAgentsData()
         self.enable_plots = self.json_settings["enable_plots"]
+        self.delete_agents = self.json_settings["delete agents"]
 
     def decodeLogLevel(self):
         return logging.INFO
@@ -41,4 +42,4 @@ class Settings:
         trust_type =  decode_trust(self.json_settings["trust"])
         population_size = self.json_settings["population size"]
         offspring_size = self.json_settings["offspring size"]
-        return ConfigData(noAgents, problem, communication, trust_type , population_size, offspring_size)
+        return AgentConfigData(noAgents, problem, communication, trust_type , population_size, offspring_size)
