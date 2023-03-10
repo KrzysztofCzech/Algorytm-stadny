@@ -14,7 +14,7 @@ def create_agents_float_solution(config : ConfigData):
         problem=config.problem, 
         population_size=config.population_size,
         offspring_population_size= config.offspring_population,
-        mutation=PolynomialMutation(probability=0.0005 , distribution_index=40  ),
+        mutation=PolynomialMutation(probability=0.0005 * (2*i +1) , distribution_index=40  ),
         selection= BinaryTournamentSelection(),
         crossover=SBXCrossover(probability=0.005),
         termination_criterion=StoppingByEvaluations(max_evaluations=10000000)))
@@ -27,7 +27,7 @@ def create_agents_float_solution(config : ConfigData):
     problem=config.problem, 
     population_size=config.population_size,
     offspring_population_size= config.offspring_population,
-    mutation=PolynomialMutation(probability=0.0005 , distribution_index=40),
+    mutation=PolynomialMutation(probability=0.001 , distribution_index=40),
     selection= BinaryTournamentSelection(),
     crossover=SBXCrossover(probability=0.005),
     termination_criterion=StoppingByEvaluations(max_evaluations=1000000000)))
