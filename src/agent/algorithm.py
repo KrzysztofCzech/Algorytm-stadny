@@ -1,6 +1,7 @@
 from copy import copy
 from typing import TypeVar, List
 import random
+import time
 from jmetal.core.algorithm import EvolutionaryAlgorithm
 from jmetal.core.operator import Mutation, Crossover
 from jmetal.core.problem import Problem
@@ -89,3 +90,18 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
     def get_name(self) -> str:
         return 'Evolution algorithm'
+    
+    def get_observable_data(self, iterations) -> dict:
+        return {'PROBLEM': self.problem,
+                'EVALUATIONS': self.evaluations,
+                'SOLUTIONS': self.get_result(),
+                'COMPUTING_TIME': time.time() - self.start_computing_time,
+                "ITERATIONS": iterations
+                }
+
+
+    def update_progress(self, iterations) -> None:
+        self.evaluations += self.offspring_population_size
+
+        observable_data = self.get_observable_data(iterations)
+        self.observable.notify_all(**observable_data)

@@ -15,6 +15,8 @@ def draw_comparision_agents_plot(Agents_list : List[Agent], name :  str):
     plt.title(f"Problem {alg1.problem.get_name()} with {alg1.problem.number_of_variables} variables")
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
+    plt.loglog()
+
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"{name}_{date}).png"))
     plt.show()
@@ -28,6 +30,7 @@ def draw_comparisson_multi_and_single(x_coord_multi, res_multi, x_coord_single ,
     plt.title(f" Comparison of Multi vs Single")
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
+    plt.loglog()
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"{name}_{date}.png"))
     plt.show()

@@ -1,6 +1,6 @@
 from enum import Enum
 import logging
-from communication.operators import crossover, mutation,mutation_temp1, mutation_temp2
+from communication.operators import crossover
 from agent.base_agent import BaseAgent
 from utils.utils import mean_of_solutions
 from  primitives.primitiveTypes import *
@@ -34,71 +34,27 @@ class CommunicationCrossover(CommunicationType):
 
 class CommunicationWithMutation(CommunicationType):
     
-    def __init__(self, operator):
+    def __init__(self, operator, mutation_type):
         self.operator = operator
-
-    def comunnicate(self, agent1 : BaseAgent , agent2: BaseAgent) -> bool:
-        new_population = agent2.transfer_data(agent1.name)
-        solutions_old = agent1.get_solutions()
-        mean_old = mean_of_solutions(solutions_old)
-        mean_new = mean_of_solutions(new_population)
-        if mean_new < mean_old*1.5:
-            new_population = mutation_temp1(solutions_old, new_population, self.operator, agent1.get_trust_memory().get_trust_value(agent2.name))
-            agent1.Island.update_solutions(new_population)
-
-            solutions_new = agent1.get_solutions()
-            mean_updated = mean_of_solutions(solutions_new)
-            if mean_updated < mean_old:
-                agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1)
-                return True        
-        else:
-            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)    
-        return False
-
-class CommunicationWithMutation_temp1(CommunicationType):
-    
-    def __init__(self, operator):
-        self.operator = operator
+        self.mutation_type = mutation_type
 
     def comunnicate(self, agent1 : BaseAgent , agent2: BaseAgent):
         new_population = agent2.transfer_data(agent1.name)
         solutions_old = agent1.get_solutions()
         mean_old = mean_of_solutions(solutions_old)
         mean_new = mean_of_solutions(new_population)
-        if mean_new < mean_old*1.5:
-            new_population = mutation_temp2(solutions_old, new_population, self.operator, agent1.get_trust_memory().get_trust_value(agent2.name))
-            agent1.Island.update_solutions(new_population)
-
-            solutions_new = agent1.get_solutions()
-            mean_updated = mean_of_solutions(solutions_new)
-            if mean_updated < mean_old:
-                agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1)            
-        else:
-            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)   
-
-class CommunicationWithMutation_temp2(CommunicationType):
-    
-    def __init__(self, operator):
-        self.operator = operator
-    
-    def comunnicate(self, agent1 : BaseAgent , agent2: BaseAgent) -> bool:
-        new_population = agent2.transfer_data(agent1.name)
-        solutions_old = agent1.get_solutions()
-        mean_old = mean_of_solutions(solutions_old)
-        mean_new = mean_of_solutions(new_population)
-        if mean_new < mean_old*1.5:
-            new_population = mutation(solutions_old, new_population, self.operator, agent1.get_trust_memory().get_trust_value(agent2.name))
+        if (mean_new- mean_old) < abs(mean_old):
+            new_population = self.mutation_type(solutions_old, new_population, self.operator, agent1.get_trust_memory().get_trust_value(agent2.name))
             agent1.Island.update_solutions(new_population)
 
             solutions_new = agent1.get_solutions()
             mean_updated = mean_of_solutions(solutions_new)
             if mean_updated < mean_old:
                 agent1.get_trust_memory().update_trust(agent1.name,agent2.name, 1)
-                return True           
+                return True            
         else:
-            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)     
+            agent1.get_trust_memory().update_trust(agent1.name,agent2.name, -1)   
         return False
-
 
 
 

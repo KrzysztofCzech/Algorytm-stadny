@@ -3,9 +3,10 @@ import logging
 from dataclasses import dataclass
 from jmetal.core.problem import Problem
 from communication.types import CommunicationType
-from decoder import decode_problem, decode_communication,decode_trust
+from settings.decoder import decode_problem, decode_communication,decode_trust
 from trust.base_trust import Trust
 import dataclasses
+from settings.enumStrings import *
 
 @dataclass
 class AgentConfigData:
@@ -39,7 +40,7 @@ class Settings:
         noAgents = self.json_settings["number_of_agents"]
         problem =  decode_problem(self.json_settings["problem"], self.json_settings["problem_size"])
         communication = decode_communication(self.json_settings["communication_type"], self.json_settings["communication_operator"])
-        trust_type =  decode_trust(self.json_settings["trust"])
+        trust_type =  decode_trust(self.json_settings[trustMembers.TRUST])
         population_size = self.json_settings["population size"]
         offspring_size = self.json_settings["offspring size"]
         return AgentConfigData(noAgents, problem, communication, trust_type , population_size, offspring_size)

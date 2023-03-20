@@ -16,20 +16,31 @@ from time import strftime
 
 class StatisticRunner:
     def __init__(self, MultiAgentRunner: MultiAgentRunner):
-        self.Executor = MultiAgentRunner
+        self.Executors = [MultiAgentRunner]
         self.history = RunData()
         self.debug = False
+        self.communication_number = 1
+        self.all_iterations = 1 
+        self.communication_frequency = 50
+        self.no_runs = 3
+    
+    def add_Executor(self, Executor: MultiAgentRunner):
+        self.Executors.extend(Executor)
 
     def set_debug(self, debug: bool):
         self.debug = debug
-        self.Executor.set_debug(debug)
+        for Executor in self.Executors:
+            Executor.set_debug(debug)
 
-    def run_an_collect_data(self, no_runs : int,cycles, cycle_iter, num_of_comm):
-        for i in range(no_runs):
-            self.Executor.initalize()
-            self.Executor.run(cycles, cycle_iter, num_of_comm)
-            self.history.add_data(*self.Executor.get_results(),50 , len(self.Executor.get_agents()))
-            logging.info(f"Run {i} out of {no_runs}")            
+    def run_an_collect_data(self):
+        for Executor in self.Executors:
+            Executor.set_observer(self.all_iterations)
+            cycles=int(self.all_iterations/self.communication_frequency/len(Executor.get_agents()))
+            for i in range(self.no_runs):
+                Executor.initalize()
+                Executor.run(cycles, self.communication_frequency, self.communication_number)
+                self.history.add_data(*Executor.get_results(),100 , len(Executor.get_agents()))
+                logging.info(f"Run {i} out of {self.no_runs}")            
 
     def save_progres(self, config, num_of_comm, filename = None,):
         data = {}

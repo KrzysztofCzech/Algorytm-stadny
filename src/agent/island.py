@@ -45,9 +45,9 @@ class Island():
         for i in range(0,iterations):
             if self.algorithm.stopping_condition_is_met():
                 break
-            self.algorithm.step()
-            self.algorithm.update_progress()
+            self.algorithm.step() 
             self.update_history()
+            self.algorithm.update_progress(1)
 
             
     def get_algorithm(self):

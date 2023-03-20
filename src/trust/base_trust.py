@@ -21,12 +21,14 @@ class Trust:
 
 # adds 1 tust when good resuts subtructs 1 when information is useless local for every agent
 class NaiveTrust(Trust):
-    def __init__(self):
+    def __init__(self, start_trust, max_trust):
         super().__init__()
+        self.start_trust = start_trust
+        self.max_trust = max_trust
 
     def update_trust(self,name_self, name_other: str, val: int) -> None:
         if not (name_other in self.trust_dict):
-            self.trust_dict[name_other] = 1
+            self.trust_dict[name_other] = self.start_trust
         else:
             self.trust_dict[name_other] = max(1, self.trust_dict[name_other] +val)
         logging.debug(f"Updated trust {name_other} to {self.trust_dict[name_other] } ")
@@ -34,13 +36,13 @@ class NaiveTrust(Trust):
 
     def check_trust(self,name_other : str) -> None:
         if not (name_other in self.trust_dict):
-            self.trust_dict[name_other] = 1
+            self.trust_dict[name_other] = self.start_trust
         return self.trust_dict[name_other]
 
     
     def get_trust_value(self, name_other: str) -> int:
         if not (name_other in self.trust_dict):
-            self.trust_dict[name_other] = 1
+            self.trust_dict[name_other] = self.start_trust
         return  self.trust_dict[name_other]
 
     def initalize(self):
@@ -54,17 +56,17 @@ class Singleton(type):
         return cls._instances[cls]
         
 class GlobalTrust(Trust, metaclass=Singleton):
-    def __init__(self):
+    def __init__(self, start_trust = 10, max_trust = 30):
         super().__init__()
-        self.max_trust = 30
-        self.starting_trust = 10
+        self.max_trust = max_trust 
+        self.start_trust = start_trust
 
     def update_trust(self,name_self, name_other: str, val: int) -> None:
         if not (name_other in self.trust_dict):
-            self.trust_dict[name_other] = self.starting_trust
+            self.trust_dict[name_other] = self.start_trust
             logging.debug(f"Initalised4 {name_other}  to {self.trust_dict[name_other]}")
         elif not (name_self in self.trust_dict):
-            self.trust_dict[name_self] = self.starting_trust
+            self.trust_dict[name_self] = self.start_trust
             logging.debug(f"Initalised3 {name_self}  to {self.trust_dict[name_self]}")
         else:
             my_trust_new = self.trust_dict[name_self] - val
@@ -80,7 +82,7 @@ class GlobalTrust(Trust, metaclass=Singleton):
 
     def check_trust(self, name_other : str) -> None:
         if not (name_other in self.trust_dict):
-            self.trust_dict[name_other] = self.starting_trust
+            self.trust_dict[name_other] = self.start_trust
             logging.debug(f"Initalised 2{name_other}  to {self.trust_dict[name_other]}")
 
         return int(self.trust_dict[name_other])
@@ -88,7 +90,7 @@ class GlobalTrust(Trust, metaclass=Singleton):
     
     def get_trust_value(self, name_other: str) -> int:
         if not (name_other in self.trust_dict):
-            self.trust_dict[name_other] = self.starting_trust
+            self.trust_dict[name_other] = self.start_trust
             logging.debug(f"Initalised1 {name_other}  to {self.trust_dict[name_other]}")
         return  int(self.trust_dict[name_other])
 

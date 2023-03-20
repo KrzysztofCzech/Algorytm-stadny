@@ -5,7 +5,7 @@ from typing import List
 from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single, draw_debug_plots_agents, draw_debug_plots_summary, draw_histogram_of_communication
 from agent.island import PopulationsData
 import numpy as np
-from jmetal.util.observer import ProgressBarObserver
+from agent.observer import ProgressBarCycleObserver
 import logging
 import time 
 
@@ -22,19 +22,23 @@ class MultiAgentRunner:
         self,
         agents: List[Agent],
         agent_single: Agent,
-        max_iterations: int
     ):
         self.__agents = agents
         self._agent_single = agent_single
         self.algorithm_data = []
         self.comunication_history = []
-        self.observer_multi = ProgressBarObserver(max=max_iterations)
-        self.observer_single = ProgressBarObserver(max=max_iterations)
         self.debug = False
+        self.modify_agent_during_run =False
         self._deleted_agents = []
+        self.observer_multi = ProgressBarCycleObserver(max=1)
+        self.observer_single = ProgressBarCycleObserver(max=1)
 
     def get_agents(self):
         return self.__agents
+    
+    def set_agent_modification(self, enable, method):
+        self.modify_agent_during_run = enable
+        self.modify_agent_method = method
     
     def set_debug(self, debug : bool):
         self.debug = debug
@@ -63,15 +67,21 @@ class MultiAgentRunner:
                 res = agent.communicate(agent2)
                 population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol, result= res)
                 self.comunication_history.append(population)
-                if spread < 0.2 and res == False and spread < 10:
-                    agent.random_restart()
+                if self.modify_agent_during_run and std < 0.3 and res == False and spread < 10:
+                    deleted = self.modify_agent_method(agent2, agent)
+                    if deleted:
+                        self._deleted_agents.extend(agent2)
+                        self.__agents.remove(agent2)
                     break
 
+    def set_observer(self, iterations):
+        self.observer_multi = ProgressBarCycleObserver(max=iterations)
+        self.observer_single = ProgressBarCycleObserver(max=iterations)
 
 
 
+    def run(self, cycles : int, cycle_iter: int, num_of_comm:int, run_comparison = True, plot_all =True):
 
-    def run(self, cycles : int, cycle_iter: int, num_of_comm:int):
         logging.info("Socjo started")
         time1 = time.time()
         for i in range(cycles):
@@ -84,25 +94,28 @@ class MultiAgentRunner:
 
 
         logging.info(f"Socjo finished in {(time.time() - time1)/60}")
+        if run_comparison:
+            time1 = time.time()
+            self.run_comparison()
+            logging.info(f"comparison finished in {(time.time() - time1)/60}")
+        
         time1 = time.time()
-        self.run_comparison()
-        logging.info(f"comparison finished in {(time.time() - time1)/60}")
-        time1 = time.time()
-        self.plot_results(1)
+        self.plot_results(1, plot_all)
         logging.info(f"plotting finished in {(time.time() - time1)/60}")
         
 
         
-    def plot_results(self, cycle_iter):
+    def plot_results(self, cycle_iter, plot_all):
         problem = self.__agents[0].Island.algorithm.problem
         describe_string = f"{problem.get_name()} {problem.number_of_variables} variables no agents {len(self.__agents)}"
         x_coord_multi, results_multi, x_coord_single , results_single = self.get_results()
         logging.info(f"best socjo {results_multi[-1]} best single {results_single[-1]}")
         draw_comparision_agents_plot(self.__agents, name = f"Agent comaprison Problem" + describe_string)
-        draw_debug_plots_agents(self.__agents, name = describe_string)
-        draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string, cycle_iter = cycle_iter)
         draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison" + describe_string)
-        draw_histogram_of_communication(self.comunication_history)
+        if plot_all:
+            draw_debug_plots_agents(self.__agents, name = describe_string)
+            draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string, cycle_iter = cycle_iter)
+            draw_histogram_of_communication(self.comunication_history)
 
     def run_comparison(self):
         all_iterations = sum([agent.get_num_of_iteration() for agent in self.__agents])

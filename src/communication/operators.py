@@ -16,24 +16,24 @@ def crossover(population_old, population_new, crossover_operator):
 
     return offspring_population
 
-def mutation(population_old, population_new, mutation_oparator, trust_level):
+def mutation_one_many_variables(population_old, population_new, mutation_oparator, trust_level):
     offspring_population = []
-    for idx, solution in enumerate(population_new, start= 1):
+    for solution in population_new:
         new_solution = copy(solution)
         offspring_population.append(mutation_oparator(new_solution, random.choice( population_old),trust_level))
     return offspring_population
 
-def mutation_temp1(population_old, population_new, mutation_oparator, trust_level):
+def mutation_many_one_variable(population_old, population_new, mutation_oparator, trust_level):
     offspring_population = []
-    for idx, solution in enumerate(population_new, start= 1):
+    for solution in population_new:
         new_solution = copy(solution)
         for i in range(trust_level):
                 offspring_population.append(mutation_oparator(new_solution, random.choice( population_old),trust_level))
     return offspring_population
 
-def mutation_temp2(population_old, population_new, mutation_oparator, trust_level):
+def mutation_many_many_variables(population_old, population_new, mutation_oparator, trust_level):
     offspring_population = []
-    for idx, solution in enumerate(population_new, start= 1):
+    for solution in population_new:
         new_solution = copy(solution)
         for i in range(trust_level):
                 offspring_population.append(mutation_oparator(new_solution, random.choice( population_old),1))

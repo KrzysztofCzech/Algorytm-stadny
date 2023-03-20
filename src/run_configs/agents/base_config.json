@@ -1,0 +1,9 @@
+
+{
+    "number_of_agents" : 5,
+    "communication_type":"temp2",
+    "communication_operator": "average",
+    "trust": {"type" : "global", "start" : 10, "max" : 30},
+    "population size": 5,
+    "offspring size" : 15
+}
