@@ -1,5 +1,5 @@
 from jmetal.problem.singleobjective.unconstrained import Rastrigin
-from problems.problems import Griewank, Ackley, ExpandedShaffer, LenardJohnesMinimumEnergyCluster, BentCigar, Discus
+from problems.problems import Griewank, Ackley, ExpandedShaffer, LenardJohnesMinimumEnergyCluster, BentCigar, Discus, SchwefeWithNoise, RosenbrockShifted
 
 from communication.types import CommunicationWithMutation, CommunicationCrossover
 from jmetal.operator import SBXCrossover
@@ -16,7 +16,9 @@ def decode_problem(problem_name, problem_size):
             "EnergyCluster":  LenardJohnesMinimumEnergyCluster(problem_size),
             "BentCigar":  BentCigar(problem_size),
             "Discus":  Discus(problem_size),
-            "ExpandedShaffer": ExpandedShaffer(problem_size)}[problem_name]
+            "ExpandedShaffer": ExpandedShaffer(problem_size),
+            "SchwefeWithNoise": SchwefeWithNoise(problem_size), 
+            "RosenbrockShifted":RosenbrockShifted(problem_size)}[problem_name]
 
 def decode_operator(operator):
     return {"swap" : swap_operator,

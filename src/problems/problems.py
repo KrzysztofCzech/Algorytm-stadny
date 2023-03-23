@@ -3,6 +3,8 @@ import random
 
 from jmetal.core.problem import  FloatProblem
 from jmetal.core.solution import FloatSolution
+from copy import deepcopy
+import numpy as np
 
 class Griewank(FloatProblem):
 
@@ -207,3 +209,70 @@ class Discus(FloatProblem):
 
     def get_name(self) -> str:
         return 'Discus'
+
+class SchwefeWithNoise(FloatProblem):
+
+    def __init__(self, number_of_variables: int = 10):
+        super(SchwefeWithNoise, self).__init__()
+        self.number_of_objectives = 1
+        self.number_of_variables = number_of_variables
+        self.number_of_constraints = 0
+
+        self.obj_directions = [self.MINIMIZE]
+        self.obj_labels = ['f(x)']
+
+        self.lower_bound = [-100 for _ in range(number_of_variables)]
+        self.upper_bound = [100 for _ in range(number_of_variables)]
+
+        FloatSolution.lower_bound = self.lower_bound
+        FloatSolution.upper_bound = self.upper_bound
+
+
+
+    def evaluate(self, solution: FloatSolution) -> FloatSolution:
+
+        x = deepcopy(solution.variables)
+        sum =-450
+        previous = 0
+        
+        for i in range(0,solution.number_of_variables):
+            x[i] += previous
+            sum  += (x[i]**2 )* 0.4 *np.random.normal(0,1)
+            previous = x[i]
+        solution.objectives[0] = sum 
+        return solution
+
+    def get_name(self) -> str:
+        return 'SchwefeWithNoise'
+    
+
+class RosenbrockShifted(FloatProblem):
+
+    def __init__(self, number_of_variables: int = 10):
+        super(RosenbrockShifted, self).__init__()
+        self.number_of_objectives = 1
+        self.number_of_variables = number_of_variables
+        self.number_of_constraints = 0
+
+        self.obj_directions = [self.MINIMIZE]
+        self.obj_labels = ['f(x)']
+
+        self.lower_bound = [-100 for _ in range(number_of_variables)]
+        self.upper_bound = [100 for _ in range(number_of_variables)]
+
+        FloatSolution.lower_bound = self.lower_bound
+        FloatSolution.upper_bound = self.upper_bound
+
+    def evaluate(self, solution: FloatSolution) -> FloatSolution:
+
+        x = deepcopy(solution.variables)
+        sum =390
+        
+        for i in range(0,solution.number_of_variables-1):
+            sum  += 100 * (((x[i]+1)**2 -x[i+1]+1 )**2) + (x[i]**2)
+        solution.objectives[0] = sum 
+        return solution
+
+    def get_name(self) -> str:
+        return 'RosenbrockShifted'
+    
