@@ -5,10 +5,10 @@ from utils.plots import boxplot, boxplot_comparison
 from utils.utils import RunData, NumpyArrayEncoder
 import json
 import logging
-from jmetal.util.observer import ProgressBarObserver
 import os
 from time import strftime
-
+from agent.agent import Agent
+import time
 
 
 
@@ -17,15 +17,23 @@ from time import strftime
 class StatisticRunner:
     def __init__(self, MultiAgentRunner: MultiAgentRunner):
         self.Executors = [MultiAgentRunner]
-        self.history = RunData()
+        self.history = [RunData()]
         self.debug = False
         self.communication_number = 1
         self.all_iterations = 1 
         self.communication_frequency = 50
         self.no_runs = 3
+        self.single_comparison = None
+        self.island_comparison =None
     
     def add_Executor(self, Executor: MultiAgentRunner):
         self.Executors.extend(Executor)
+
+    def set_single_agent(self, agent :Agent):
+        self.single_comparison = agent
+
+    def set_single_agent(self, runner :MultiAgentRunner):
+        self.island_comparison = runner        
 
     def set_debug(self, debug: bool):
         self.debug = debug
@@ -33,14 +41,23 @@ class StatisticRunner:
             Executor.set_debug(debug)
 
     def run_an_collect_data(self):
-        for Executor in self.Executors:
+        for idx, Executor in enumerate(self.Executors):
             Executor.set_observer(self.all_iterations)
             cycles=int(self.all_iterations/self.communication_frequency/len(Executor.get_agents()))
             for i in range(self.no_runs):
                 Executor.initalize()
                 Executor.run(cycles, self.communication_frequency, self.communication_number)
-                self.history.add_data(*Executor.get_results(),100 , len(Executor.get_agents()))
-                logging.info(f"Run {i} out of {self.no_runs}")            
+                self.history[idx].add_data(*Executor.get_results(),1000 , len(Executor.get_agents()))
+                logging.info(f"Run {i} out of {self.no_runs}")           
+
+        if self.single_comparison is not None:
+            time1 = time.time()
+            self.single_comparison.run(self.all_iterations)
+            logging.info(f"Single comparison finished in {(time.time() - time1)/60}")
+
+        if self.island_comparison is not None:
+            self.run_island_comparison()
+
 
     def save_progres(self, config, num_of_comm, filename = None,):
         data = {}
@@ -75,3 +92,8 @@ class StatisticRunner:
         
 
 
+    def run_island_comparison(self):
+        time1 = time.time()
+        cycles=int(self.all_iterations/self.communication_frequency/len(self.island_comparison.get_agents()))
+        self.island_comparison.run(cycles, self.communication_frequency, self.communication_number)
+        logging.info(f"Island comparison finished in {(time.time() - time1)/60}")

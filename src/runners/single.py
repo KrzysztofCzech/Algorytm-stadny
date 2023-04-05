@@ -117,10 +117,6 @@ class MultiAgentRunner:
             draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string, cycle_iter = cycle_iter)
             draw_histogram_of_communication(self.comunication_history)
 
-    def run_comparison(self):
-        all_iterations = sum([agent.get_num_of_iteration() for agent in self.__agents])
-        self._agent_single.run(all_iterations)
-
     def get_results(self):
         res_multi = self.__agents[0].Island.get_history_soultion()
         x_coord_multi = list(range(1, len(res_multi)+1))

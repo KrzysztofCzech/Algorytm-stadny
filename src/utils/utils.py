@@ -23,8 +23,7 @@ class RunData:
     def prepare_array(self,array, sampling):
         return np.array(array[::sampling] + [array[-1]])
 
-    def add_data(self, x_coor_multi, results_multi, x_coor_single, results_single, no_points, no_agents):
-        sampling = no_points *10
+    def add_data(self, x_coor_multi, results_multi, x_coor_single, results_single, sampling, no_agents):
         if self.x_coor_multi.any():
             self.x_coor_multi = np.vstack((self.x_coor_multi, self.prepare_array(x_coor_multi, sampling)))
             self.results_multi = np.vstack((self.results_multi, self.prepare_array(results_multi, sampling)))

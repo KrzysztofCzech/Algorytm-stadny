@@ -15,7 +15,7 @@ def draw_comparision_agents_plot(Agents_list : List[Agent], name :  str):
     plt.title(f"Problem {alg1.problem.get_name()} with {alg1.problem.number_of_variables} variables")
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
-    plt.loglog()
+    plt.yscale("log")
 
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"{name}_{date}).png"))
@@ -50,6 +50,7 @@ def boxplot_comparison(series1, positions1,series2, positions2, title):
     plt.title(title)
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
+    plt.xticks(np.linspace(0, max(series1[-1], series2[-1]), num=30))
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"{title}_{date}.png"))
     plt.show()
