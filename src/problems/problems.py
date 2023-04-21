@@ -1,10 +1,11 @@
 import math
 import random
 
-from jmetal.core.problem import  FloatProblem
+from jmetal.core.problem import FloatProblem
 from jmetal.core.solution import FloatSolution
 from copy import deepcopy
 import numpy as np
+
 
 class Griewank(FloatProblem):
 
@@ -27,17 +28,18 @@ class Griewank(FloatProblem):
         a = 4000.0
         result = 1
         x = solution.variables
-        tmp =1 
+        tmp = 1
         for i in range(solution.number_of_variables):
-            result += (x[i] * x[i])/a
-            tmp*= math.cos(x[i]/(i+1)*math.sqrt(i+1))
-        result-=tmp
+            result += (x[i] * x[i]) / a
+            tmp *= math.cos(x[i] / (i + 1) * math.sqrt(i + 1))
+        result -= tmp
         solution.objectives[0] = result
 
         return solution
 
     def get_name(self) -> str:
         return 'Griewank'
+
 
 class Ackley(FloatProblem):
 
@@ -59,18 +61,20 @@ class Ackley(FloatProblem):
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
         a = 20.0
         b = 0.2
-        c = 2*math.pi
+        c = 2 * math.pi
         x = solution.variables
         sum_squares = 0
         sum_cos = 0
         for i in range(solution.number_of_variables):
             sum_squares += (x[i] * x[i])
-            sum_cos += math.cos(x[i]*c)  
-        solution.objectives[0] = -a*math.exp(-b*math.sqrt(sum_squares/self.number_of_variables)) - math.exp(sum_cos/self.number_of_variables) +a + math.exp(1)
+            sum_cos += math.cos(x[i] * c)
+        solution.objectives[0] = -a * math.exp(-b * math.sqrt(sum_squares / self.number_of_variables)) - math.exp(
+            sum_cos / self.number_of_variables) + a + math.exp(1)
         return solution
 
     def get_name(self) -> str:
         return 'Ackley'
+
 
 class ExpandedShaffer(FloatProblem):
 
@@ -90,21 +94,21 @@ class ExpandedShaffer(FloatProblem):
         FloatSolution.upper_bound = self.upper_bound
 
     def g(self, x, y):
-        up = math.pow(math.sin(math.sqrt(x**2 + y**2)),2 ) - 0.5
-        down = math.pow(1 + 0.001*(x**2+y**2),2)
-        return up/down
+        up = math.pow(math.sin(math.sqrt(x ** 2 + y ** 2)), 2) - 0.5
+        down = math.pow(1 + 0.001 * (x ** 2 + y ** 2), 2)
+        return up / down
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
-
         x = solution.variables
-        sum = 0 
+        sum = 0
         for i in range(solution.number_of_variables):
-            sum += self.g(x[i], x[(i+1)% solution.number_of_variables])
+            sum += self.g(x[i], x[(i + 1) % solution.number_of_variables])
         solution.objectives[0] = sum
         return solution
 
     def get_name(self) -> str:
         return 'ExpandedShaffer'
+
 
 class LenardJohnesMinimumEnergyCluster(FloatProblem):
 
@@ -123,24 +127,22 @@ class LenardJohnesMinimumEnergyCluster(FloatProblem):
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
 
-    def d(self, i , j, variables):
-        sum_k  = 0
+    def d(self, i, j, variables):
+        sum_k = 0
         for k in range(3):
-            
-            sum_k += math.pow(variables[3 * i + k - 2] - variables[3*j+k-2], 2)
-        return math.pow(sum_k,3)
-
+            sum_k += math.pow(variables[3 * i + k - 2] - variables[3 * j + k - 2], 2)
+        return math.pow(sum_k, 3)
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
 
         x = solution.variables
         sum = 12.7120622568
         sum_j = 0
-        for i in range((solution.number_of_variables-2)//3):
-            for j in range(i+1, self.number_of_variables//3):
-                d_tmp = self.d(i,j,x)
-                sum_j += (1/math.pow(d_tmp,2)) - 2/d_tmp
-            sum  += sum_j
+        for i in range((solution.number_of_variables - 2) // 3):
+            for j in range(i + 1, self.number_of_variables // 3):
+                d_tmp = self.d(i, j, x)
+                sum_j += (1 / math.pow(d_tmp, 2)) - 2 / d_tmp
+            sum += sum_j
         solution.objectives[0] = sum
         return solution
 
@@ -165,19 +167,17 @@ class BentCigar(FloatProblem):
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
 
-
-
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
-
         x = solution.variables
-        sum =0
-        for i in range(1,solution.number_of_variables):
-            sum  += x[i] * x[i]
-        solution.objectives[0] = sum *  10**6 + x[0]*x[0]
+        sum = 0
+        for i in range(1, solution.number_of_variables):
+            sum += x[i] * x[i]
+        solution.objectives[0] = sum * 10 ** 6 + x[0] * x[0]
         return solution
 
     def get_name(self) -> str:
         return 'BentCigar'
+
 
 class Discus(FloatProblem):
 
@@ -196,24 +196,22 @@ class Discus(FloatProblem):
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
 
-
-
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
-
         x = solution.variables
-        sum =0
-        for i in range(1,solution.number_of_variables):
-            sum  += x[i] * x[i]
-        solution.objectives[0] = sum +  10**6 * x[0]*x[0]
+        sum = 0
+        for i in range(1, solution.number_of_variables):
+            sum += x[i] * x[i]
+        solution.objectives[0] = sum + 10 ** 6 * x[0] * x[0]
         return solution
 
     def get_name(self) -> str:
         return 'Discus'
 
-class SchwefeWithNoise(FloatProblem):
+
+class SchewelWithNoise(FloatProblem):
 
     def __init__(self, number_of_variables: int = 10):
-        super(SchwefeWithNoise, self).__init__()
+        super(SchewelWithNoise, self).__init__()
         self.number_of_objectives = 1
         self.number_of_variables = number_of_variables
         self.number_of_constraints = 0
@@ -227,24 +225,21 @@ class SchwefeWithNoise(FloatProblem):
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
 
-
-
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
-
         x = deepcopy(solution.variables)
-        sum =-450
+        sum = -450
         previous = 0
-        
-        for i in range(0,solution.number_of_variables):
+
+        for i in range(0, solution.number_of_variables):
             x[i] += previous
-            sum  += (x[i]**2 )* 0.4 *np.random.normal(0,1)
+            sum += (x[i] ** 2) * 0.4 * np.random.normal(0, 1)
             previous = x[i]
-        solution.objectives[0] = sum 
+        solution.objectives[0] = sum
         return solution
 
     def get_name(self) -> str:
-        return 'SchwefeWithNoise'
-    
+        return 'SchewelWithNoise'
+
 
 class RosenbrockShifted(FloatProblem):
 
@@ -264,15 +259,13 @@ class RosenbrockShifted(FloatProblem):
         FloatSolution.upper_bound = self.upper_bound
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
-
         x = deepcopy(solution.variables)
-        sum =390
-        
-        for i in range(0,solution.number_of_variables-1):
-            sum  += 100 * (((x[i]+1)**2 -x[i+1]+1 )**2) + (x[i]**2)
-        solution.objectives[0] = sum 
+        sum = 390
+
+        for i in range(0, solution.number_of_variables - 1):
+            sum += 100 * (((x[i] + 1) ** 2 - x[i + 1] + 1) ** 2) + (x[i] ** 2)
+        solution.objectives[0] = sum
         return solution
 
     def get_name(self) -> str:
         return 'RosenbrockShifted'
-    

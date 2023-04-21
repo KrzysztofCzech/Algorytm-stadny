@@ -5,13 +5,13 @@
     "problem":"Rastrigin",
     "problem_size": 100,
     "communication_type":"mutation_many_many",
-    "communication_operator": "average",
+    "communication_operator": "swap",
     "max_time": 800,
     "enable_plots": true,
-    "trust": {"type" : "global", "start" : 10, "max" : 30},
+    "trust": {"type" : "global", "start" : 30, "max" : 50},
     "population size": 5,
     "offspring size" : 15,
-    "agent_modificaiton": null,
+    "agent_modification": null,
     "base_probability" : 0.0005,
     "delete agents": true
 }

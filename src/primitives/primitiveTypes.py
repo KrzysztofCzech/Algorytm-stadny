@@ -1,6 +1,5 @@
 
+class CommunicationType:
 
-class CommunicationType():
-
-    def comunnicate(self, agent1, agent2) -> bool:
+    def communicate(self, agent1, agent2) -> bool:
         raise NotImplementedError()

@@ -1,7 +1,7 @@
 
 {
     "LOG_LEVEL" : "INFO",
-    "number_of_agents" : 2,
+    "number_of_agents" : 5,
     "problem":"ExpandedShaffer",
     "problem_size": 100,
     "communication_type":"mutation_many_many",
@@ -10,5 +10,8 @@
     "enable_plots": true,
     "trust": {"type" : "global", "start" : 10, "max" : 30},
     "population size": 5,
-    "offspring size" : 15
+    "offspring size" : 15,
+    "agent_modification": null,
+    "base_probability" : 0.0005,
+    "delete agents": true
 }

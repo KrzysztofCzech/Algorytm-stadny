@@ -15,7 +15,8 @@ from jmetal.operator.selection import NaryRandomSolutionSelection
 S = TypeVar('S')
 R = TypeVar('R')
 
-class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
+
+class EvolutionAlgorithm(EvolutionaryAlgorithm[S, R]):
 
     def __init__(self,
                  problem: Problem,
@@ -27,7 +28,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
                  termination_criterion: TerminationCriterion,
                  population_generator: Generator = RandomGenerator(),
                  population_evaluator: Evaluator = SequentialEvaluator()):
-        super(EvolutionAlgoritm, self).__init__(
+        super(EvolutionAlgorithm, self).__init__(
             problem=problem,
             population_size=population_size,
             offspring_population_size=offspring_population_size)
@@ -40,7 +41,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
         self.population_generator = population_generator
         self.population_evaluator = population_evaluator
-        self.crossover_oparator = crossover
+        self.crossover_operator = crossover
 
         self.termination_criterion = termination_criterion
         self.observable.register(termination_criterion)
@@ -61,25 +62,22 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
     def reproduction(self, population: List[S]) -> List[S]:
         offspring_population = []
         for solution in population:
-            for j in range(max(1,int(self.offspring_population_size/2 / len(population)))):
+            for j in range(max(1, int(self.offspring_population_size / 2 / len(population)))):
                 new_solution = copy(solution)
                 offspring_population.append(self.mutation_operator.execute(new_solution))
-                
-        for i in range(max(5,len(offspring_population)-self.offspring_population_size)):
-            solution1, solution2 = random.sample(population, 2)
-            offspring_population.extend(self.crossover_oparator.execute([copy(solution1), copy(solution2)]))
 
+        for i in range(max(5, len(offspring_population) - self.offspring_population_size)):
+            solution1, solution2 = random.sample(population, 2)
+            offspring_population.extend(self.crossover_operator.execute([copy(solution1), copy(solution2)]))
 
         return offspring_population
 
     def replacement(self, population: List[S], offspring_population: List[S]) -> List[S]:
-        population_pool = []
         population_pool = population
         population_pool.extend(offspring_population)
 
-
-        population_pool.sort(key=lambda s:(overall_constraint_violation_degree(s), s.objectives[0]))
-        #new_population = self.replacement_operator.execute(population_pool)
+        population_pool.sort(key=lambda s: (overall_constraint_violation_degree(s), s.objectives[0]))
+        # new_population = self.replacement_operator.execute(population_pool)
         new_population = [population_pool[0]]
         for i in range(self.population_size - 1):
             new_population.append(self.selection_operator.execute(population_pool[1:]))
@@ -90,7 +88,7 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
 
     def get_name(self) -> str:
         return 'Evolution algorithm'
-    
+
     def get_observable_data(self, iterations) -> dict:
         return {'PROBLEM': self.problem,
                 'EVALUATIONS': self.evaluations,
@@ -98,7 +96,6 @@ class EvolutionAlgoritm(EvolutionaryAlgorithm[S, R]):
                 'COMPUTING_TIME': time.time() - self.start_computing_time,
                 "ITERATIONS": iterations
                 }
-
 
     def update_progress(self, iterations) -> None:
         self.evaluations += self.offspring_population_size
