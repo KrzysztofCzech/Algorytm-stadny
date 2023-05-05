@@ -12,22 +12,21 @@ def draw_comparison_agents_plot(Agents_list: List[Agent], name: str):
         plt.plot(range(len(agent.Island.get_history_solution())), agent.Island.get_history_solution())
     alg1 = Agents_list[0].Island.algorithm
     plt.legend([agent.name for agent in Agents_list])
-    plt.title(f"Compaison {name}")
+    plt.title(f"{name}")
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
-    plt.yscale("log")
 
     date = strftime("%Y-%m-%d %H%M%S")
     plt.savefig(os.path.join('../figs', f"{name}_{date}).png"))
     plt.show()
 
 
-def draw_comparison_multi_and_single(x_coord_multi, res_multi, x_coord_single, results_single, name: str):
+def draw_comparison_multi_and_single(x_coord_multi, res_multi, x_coord_single, results_single,name, comparsion_type, executor_name):
     plt.plot(x_coord_multi, res_multi)
     plt.plot(x_coord_single, results_single)
 
-    plt.legend(["Socjo", "Single"])
-    plt.title(f" Comparison {name}")
+    plt.legend([executor_name, comparsion_type])
+    plt.title(f"{name}")
     plt.xlabel("Number of iterations")
     plt.ylabel("Objective value")
     plt.yscale("log")

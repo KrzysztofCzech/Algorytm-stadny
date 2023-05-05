@@ -1,6 +1,7 @@
 import random
 from agent.agent import Agent
 from typing import List
+from settings.settings import AgentConfigData
 from utils.plots import draw_comparison_agents_plot, draw_comparison_multi_and_single, draw_debug_plots_agents, \
     draw_debug_plots_summary, draw_histogram_of_communication
 from agent.island import PopulationsData
@@ -8,6 +9,8 @@ import numpy as np
 from agent.observer import ProgressBarCycleObserver
 import logging
 import time
+
+from utils.utils import RunData
 
 
 def calc_spread_and_std(all_solutions):
@@ -23,7 +26,8 @@ class MultiAgentRunner:
 
     def __init__(
             self,
-            agents: List[Agent]
+            agents: List[Agent],
+            name:str,
     ):
         self.modify_agent_method = None
         self.__agents = agents
@@ -34,6 +38,9 @@ class MultiAgentRunner:
         self._deleted_agents = []
         self.observer_multi = ProgressBarCycleObserver(max=1)
         self.observer_single = ProgressBarCycleObserver(max=1)
+        self.history: RunData = RunData()
+        self.config: AgentConfigData = None
+        self.name: str = name
 
     def get_agents(self):
         return self.__agents
@@ -55,6 +62,15 @@ class MultiAgentRunner:
     def run_cycle(self, cycle_iterations: int) -> None:
         for agent in self.__agents:
             agent.run(cycle_iterations)
+
+    def add_history_data(self, x_coor_multi, results_multi, sampling):
+        self.history.add_data(x_coor_multi, results_multi, sampling)
+
+    def set_config(self, config):
+        self.config = config
+
+    def get_history(self):
+        return self.history
 
     def communicate(self, number_of_communications):
         for agent in self.__agents:
@@ -81,27 +97,23 @@ class MultiAgentRunner:
 
     def run(self, cycles: int, cycle_iter: int, num_of_comm: int, run_comparison=True, plot_all=True):
 
-        logging.info("Socjo started")
-        time1 = time.time()
         for i in range(cycles):
             self.run_cycle(cycle_iter)
             self.collect_data()
             self.communicate(num_of_comm)
             self.collect_data()
-        logging.info(f"Socjo finished in {(time.time() - time1) / 60}")
 
         time1 = time.time()
-        logging.info(f"plotting finished in {(time.time() - time1) / 60}")
 
-    def plot_results(self,cycle_iter,  x_ticks_compparison, results_compparison, base_name):
+    def plot_results(self, cycle_iter, x_ticks_compparison, results_compparison, comparison_type, executor_name):
         problem = self.__agents[0].Island.algorithm.problem
-        describe_string = f"{problem.get_name()} {problem.number_of_variables} variables {base_name}"
+        describe_string = f"{problem.get_name()}, {problem.number_of_variables} variables,"
         x_coord_multi, results_multi = self.get_results()
-        draw_comparison_agents_plot(self.__agents, name=f"Agent comparison Problem" + describe_string)
+        draw_comparison_agents_plot(self.__agents, name=f"{describe_string} agents comparison " )
         draw_comparison_multi_and_single(x_coord_multi, results_multi, x_ticks_compparison, results_compparison,
-                                         name=f"Single agent and multi agent system comparison" + describe_string)
-        draw_debug_plots_agents(self.__agents, name=describe_string)
-        draw_debug_plots_summary(self.algorithm_data, self.__agents, name=describe_string, cycle_iter=cycle_iter)
+                                         describe_string + " algorithm comparison", comparison_type, executor_name)
+        #draw_debug_plots_agents(self.__agents, name=describe_string)
+        #draw_debug_plots_summary(self.algorithm_data, self.__agents, name=describe_string, cycle_iter=cycle_iter)
         draw_histogram_of_communication(self.communication_history)
 
     def get_results(self):

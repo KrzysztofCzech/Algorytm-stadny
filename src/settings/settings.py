@@ -10,6 +10,18 @@ from settings.enumStrings import *
 
 
 @dataclass
+class ConfigData:
+    noAgents: int
+    problem: Problem
+    communicationType: CommunicationType
+    trust_type: Trust
+    population_size: int
+    offspring_population: int
+
+    def as_dict(self):
+        return dataclasses.asdict(self)
+
+@dataclass
 class AgentConfigData:
     noAgents: int
     problem: Problem
@@ -41,7 +53,7 @@ class Settings:
         self.max_time = self.json_settings["max_time"]
         self.agents_data = self.decodeAgentsData()
         self.enable_plots = self.json_settings["enable_plots"]
-        self.delete_agents = self.json_settings["delete agents"]
+        #self.delete_agents = self.json_settings["delete agents"]
 
     def decodeAgentsData(self):
         noAgents = self.json_settings["number_of_agents"]

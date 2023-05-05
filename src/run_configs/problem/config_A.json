@@ -8,7 +8,7 @@
     "communication_operator": "average",
     "max_time": 800,
     "enable_plots": true,
-    "trust": {"type" : "global", "start" : 10, "max" : 30},
+    "trust": {"type" : "global", "start" : 20, "max" : 50},
     "population size": 5,
     "offspring size" : 15
 }
