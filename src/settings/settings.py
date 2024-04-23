@@ -10,18 +10,6 @@ from settings.enumStrings import *
 
 
 @dataclass
-class ConfigData:
-    noAgents: int
-    problem: Problem
-    communicationType: CommunicationType
-    trust_type: Trust
-    population_size: int
-    offspring_population: int
-
-    def as_dict(self):
-        return dataclasses.asdict(self)
-
-@dataclass
 class AgentConfigData:
     noAgents: int
     problem: Problem
@@ -29,9 +17,13 @@ class AgentConfigData:
     trust_type: Trust
     population_size: int
     offspring_population: int
+    start_trust: int
 
     def as_dict(self):
         return dataclasses.asdict(self)
+    
+    def __str__(self):
+        return f"agents: {self.noAgents}, problem {self.problem.get_name()} {self.problem.number_of_variables}, trust {self.trust_type.start_trust}"
 
 
 def decodeLogLevel():
@@ -45,7 +37,7 @@ class Settings:
         self.agents_data = None
         self.max_time = None
         self.log_level = None
-        self.json_settings = json.load(json_settings)
+        self.json_settings = json_settings
         self.decodeJson()
 
     def decodeJson(self):
@@ -63,4 +55,4 @@ class Settings:
         trust_type = decode_trust(self.json_settings[trustMembers.TRUST])
         population_size = self.json_settings["population size"]
         offspring_size = self.json_settings["offspring size"]
-        return AgentConfigData(noAgents, problem, communication, trust_type, population_size, offspring_size)
+        return AgentConfigData(noAgents, problem, communication, trust_type, population_size, offspring_size, start_trust = self.json_settings[trustMembers.TRUST][trustMembers.START])

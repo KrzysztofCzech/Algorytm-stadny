@@ -46,6 +46,9 @@ class NaiveTrust(Trust):
     def initialize(self):
         self.trust_dict = {}
 
+    def __str__(self) -> str:
+        return "Local"
+
 
 class Singleton(type):
     _instances = {}
@@ -55,6 +58,8 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+    def __copy__(cls, instance):
+        return instance
 
 class GlobalTrust(Trust, metaclass=Singleton):
     def __init__(self, start_trust=10, max_trust=30):
@@ -88,3 +93,9 @@ class GlobalTrust(Trust, metaclass=Singleton):
 
     def initialize(self):
         self.trust_dict = {}
+
+    def set_start_trust(self, start_trust:int):
+        self.start_trust =  start_trust
+    
+    def __str__(self) -> str:
+        return "Global"

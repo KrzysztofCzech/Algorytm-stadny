@@ -5,6 +5,8 @@ import os
 import numpy as np
 from json import JSONEncoder
 
+from agent.island import PopulationsData
+
 
 class NumpyArrayEncoder(JSONEncoder):
     def default(self, obj):
@@ -58,3 +60,19 @@ def save_history(history: RunData, name: str):
 
 def save_np_arr(array: np.array, path: str):
     np.save(array, path)
+
+def list_to_dict(population_list : List[PopulationsData]):
+    population1 = population_list[0]
+    data = population1.__dict__
+    for key in data.keys():
+        data[key] = []
+
+    for population in population_list:
+        temp = population.__dict__
+        for key in data.keys():
+            data[key].extend(temp[key])
+
+    for key, val in data.items():
+        data[key] = np.array(val)
+
+    return data

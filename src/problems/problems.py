@@ -100,7 +100,7 @@ class ExpandedShaffer(FloatProblem):
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
         x = solution.variables
-        sum = 0
+        sum = solution.number_of_variables/2
         for i in range(solution.number_of_variables):
             sum += self.g(x[i], x[(i + 1) % solution.number_of_variables])
         solution.objectives[0] = sum
@@ -121,8 +121,8 @@ class LenardJohnesMinimumEnergyCluster(FloatProblem):
         self.obj_directions = [self.MINIMIZE]
         self.obj_labels = ['f(x)']
 
-        self.lower_bound = [-20 for _ in range(number_of_variables)]
-        self.upper_bound = [20 for _ in range(number_of_variables)]
+        self.lower_bound = [-80 for _ in range(number_of_variables)]
+        self.upper_bound = [80 for _ in range(number_of_variables)]
 
         FloatSolution.lower_bound = self.lower_bound
         FloatSolution.upper_bound = self.upper_bound
@@ -138,10 +138,10 @@ class LenardJohnesMinimumEnergyCluster(FloatProblem):
         x = solution.variables
         sum = 12.7120622568
         sum_j = 0
-        for i in range((solution.number_of_variables - 2) // 3):
+        for i in range(((solution.number_of_variables) // 3) -2):
             for j in range(i + 1, self.number_of_variables // 3):
                 d_tmp = self.d(i, j, x)
-                sum_j += (1 / math.pow(d_tmp, 2)) - 2 / d_tmp
+                sum_j += (1 / math.pow(d_tmp, 2)) - (2 / d_tmp)
             sum += sum_j
         solution.objectives[0] = sum
         return solution
@@ -227,14 +227,13 @@ class SchewelWithNoise(FloatProblem):
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
         x = deepcopy(solution.variables)
-        sum = -450
+        sum = 0
         previous = 0
 
         for i in range(0, solution.number_of_variables):
-            x[i] += previous
-            sum += (x[i] ** 2) * 0.4 * np.random.normal(0, 1)
-            previous = x[i]
-        solution.objectives[0] = sum
+            previous += x[i]
+            sum += (previous ** 2)
+        solution.objectives[0] = sum  *(1 + 0.4 * abs(np.random.normal(0, 1)))
         return solution
 
     def get_name(self) -> str:

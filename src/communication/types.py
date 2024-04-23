@@ -15,7 +15,8 @@ class AttitudeType(Enum):
 class CommunicationCrossover(CommunicationType):
 
     def __init__(self, operator):
-        self.crossover_operator = operator
+        super()
+        self.operator = operator
 
     def communicate(self, agent1, agent2):
         new_population = agent2.transfer_data(agent1.name)
@@ -23,7 +24,7 @@ class CommunicationCrossover(CommunicationType):
         mean_old = mean_of_solutions(solutions_old)
         mean_new = mean_of_solutions(new_population)
         if mean_new < mean_old:
-            new_population = crossover(solutions_old, new_population, self.crossover_operator)
+            new_population = crossover(solutions_old, new_population, self.operator)
             agent1.Island.update_solutions(new_population)
             solutions_new = agent1.get_solutions()
             mean_updated = mean_of_solutions(solutions_new)
@@ -31,6 +32,9 @@ class CommunicationCrossover(CommunicationType):
                 agent1.get_trust_memory().update_trust(agent1.name, agent2.name, 1)
                 return True
         return False
+    
+    def __str__(self) -> str:
+        return "Crossover"
 
 
 class CommunicationMigration(CommunicationType):
@@ -43,6 +47,7 @@ class CommunicationMigration(CommunicationType):
 class CommunicationWithMutation(CommunicationType):
 
     def __init__(self, operator, mutation_type):
+        super()
         self.operator = operator
         self.mutation_type = mutation_type
 
@@ -64,6 +69,10 @@ class CommunicationWithMutation(CommunicationType):
         else:
             agent1.get_trust_memory().update_trust(agent1.name, agent2.name, -1)
         return False
+    
+        
+    def __str__(self) -> str:
+        return "Mutation"
 
 
 def get_selector(attidute: AttitudeType):

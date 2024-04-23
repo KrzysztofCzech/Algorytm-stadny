@@ -8,6 +8,7 @@ from communication.operators import swap_operator, average_operator, mutation_ma
     mutation_many_one_variable, mutation_one_many_variables
 from trust.base_trust import NaiveTrust, GlobalTrust
 from settings.enumStrings import trustMembers
+from jmetal.problem.singleobjective.unconstrained import Sphere
 
 
 def decode_problem(problem_name, problem_size):
@@ -19,7 +20,8 @@ def decode_problem(problem_name, problem_size):
             "Discus": Discus(problem_size),
             "ExpandedShaffer": ExpandedShaffer(problem_size),
             "SchewelWithNoise": SchewelWithNoise(problem_size),
-            "RosenbrockShifted": RosenbrockShifted(problem_size)}[problem_name]
+            "RosenbrockShifted": RosenbrockShifted(problem_size),
+            "Sphere": Sphere(problem_size)}[problem_name]
 
 
 def decode_operator(operator):

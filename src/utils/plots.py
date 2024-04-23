@@ -178,3 +178,4 @@ def draw_histogram_of_communication(communication_history: List[PopulationsData]
                         'Negative communication')
     histogram_from_data(solutions_spread_false, 200, 'Spread of 2 algorithm populations',
                         'Amount of communication', 'Negative communication')
+ 

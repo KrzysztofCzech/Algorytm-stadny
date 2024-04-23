@@ -26,3 +26,7 @@ for statistic in Statistic_runner_list:
     statistic.run_an_collect_data()
     if settings.enable_plots:
         statistic.plot()
+
+
+def average_data(data):
+    return sum(data) / len(data)

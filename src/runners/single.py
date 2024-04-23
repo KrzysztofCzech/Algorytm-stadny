@@ -31,7 +31,7 @@ class MultiAgentRunner:
     ):
         self.modify_agent_method = None
         self.__agents = agents
-        self.algorithm_data = []
+        self.algorithm_data : List[PopulationsData] = [] 
         self.communication_history = []
         self.debug = False
         self.modify_agent_during_run = False
@@ -41,13 +41,15 @@ class MultiAgentRunner:
         self.history: RunData = RunData()
         self.config: AgentConfigData = None
         self.name: str = name
+        self.modify_agent_metod_name = "null"
 
     def get_agents(self):
         return self.__agents
 
-    def set_agent_modification(self, enable, method):
+    def set_agent_modification(self, enable, method, name):
         self.modify_agent_during_run = enable
         self.modify_agent_method = method
+        self.modify_agent_metod_name = name
 
     def set_debug(self, debug: bool):
         self.debug = debug
@@ -114,7 +116,7 @@ class MultiAgentRunner:
                                          describe_string + " algorithm comparison", comparison_type, executor_name)
         #draw_debug_plots_agents(self.__agents, name=describe_string)
         #draw_debug_plots_summary(self.algorithm_data, self.__agents, name=describe_string, cycle_iter=cycle_iter)
-        draw_histogram_of_communication(self.communication_history)
+        #draw_histogram_of_communication(self.communication_history)
 
     def get_results(self):
         results = self.__agents[0].Island.get_history_solution()

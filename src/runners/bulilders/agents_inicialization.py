@@ -6,7 +6,7 @@ from agent.algorithm import EvolutionAlgorithm
 from agent.island import Island
 from communication.types import AttitudeType
 from settings.settings import AgentConfigData
-
+from copy import copy
 
 def create_agents_all_equal(config: AgentConfigData):
     Agents = []
@@ -49,7 +49,7 @@ def create_agents_all_equal(config: AgentConfigData):
         Island1.start()
         migration_agents.append(
             Agent(Island1, name=f"Agent{i}", attitude=AttitudeType(2), communication_type=config.communicationType,
-                  trust_type=config.trust_type))
+                  trust_type=copy(config.trust_type)))
 
     return Agents, Agent_Reference, migration_agents
 
@@ -68,7 +68,7 @@ def create_agents_different_probability(config: AgentConfigData, factor: float):
         Island1.start()
         Agents.append(
             Agent(Island1, name=f"Agent{i}", attitude=AttitudeType(2), communication_type=config.communicationType,
-                  trust_type=config.trust_type))
+                  trust_type=copy(config.trust_type)))
 
     Island2 = Island(algorithm=EvolutionAlgorithm(
         problem=config.problem,
