@@ -1,0 +1,17 @@
+
+{
+    "LOG_LEVEL" : "INFO",
+    "number_of_agents" : 10,
+    "problem":"Rastrigin",
+    "problem_size": 100,
+    "communication_type":"mutation_many_many",
+    "communication_operator": "average",
+    "max_time": 800,
+    "enable_plots": true,
+    "trust": {"type" : "naive", "start" : 25, "max" : 100},
+    "population size": 5,
+    "offspring size" : 15,
+    "agent_modification": null,
+    "base_probability" : 0.0005,
+    "delete agents": true
+}

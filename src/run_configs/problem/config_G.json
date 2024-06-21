@@ -1,0 +1,14 @@
+
+{
+    "LOG_LEVEL" : "INFO",
+    "number_of_agents" : 5,
+    "problem":"Griewank",
+    "problem_size": 100,
+    "communication_type":"mutation_many_many",
+    "communication_operator": "average",
+    "max_time": 800,
+    "enable_plots": true,
+    "trust": {"type" : "global", "start" : 10, "max" : 30},
+    "population size": 5,
+    "offspring size" : 15
+}

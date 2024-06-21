@@ -1,0 +1,14 @@
+
+{
+    "LOG_LEVEL" : "INFO",
+    "number_of_agents" : 10,
+    "problem":"EnergyCluster",
+    "problem_size": 50,
+    "communication_type":"mutation_many_many",
+    "communication_operator": "swap",
+    "max_time": 800,
+    "enable_plots": true,
+    "trust": {"type" : "global", "start" : 15, "max" : 30},
+    "population size": 5,
+    "offspring size" : 15
+}

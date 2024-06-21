@@ -1,125 +1,140 @@
-
 import random
 from agent.agent import Agent
 from typing import List
-from utils.plots import draw_comparision_agents_plot, draw_comparisson_multi_and_single, draw_debug_plots_agents, draw_debug_plots_summary, draw_histogram_of_communication
+from settings.settings import AgentConfigData
+from utils.plots import draw_comparison_agents_plot, draw_comparison_multi_and_single, draw_debug_plots_agents, \
+    draw_debug_plots_summary, draw_histogram_of_communication
 from agent.island import PopulationsData
 import numpy as np
-from jmetal.util.observer import ProgressBarObserver
+from agent.observer import ProgressBarCycleObserver
 import logging
-import time 
+import time
+
+from utils.utils import RunData
+
 
 def calc_spread_and_std(all_solutions):
-    spread = max(max([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions])) -  min(min([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions]))
-    solution_array  = np.array([[sol.variables for sol in sol_row] for sol_row in all_solutions])
+    spread = max(max([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions])) - min(
+        min([[sol.objectives[0] for sol in sol_row] for sol_row in all_solutions]))
+    solution_array = np.array([[sol.variables for sol in sol_row] for sol_row in all_solutions])
     std = np.mean(np.std(solution_array, axis=0))
     means_sol = np.mean(solution_array, axis=0)
     return spread, std, means_sol
 
+
 class MultiAgentRunner:
 
     def __init__(
-        self,
-        agents: List[Agent],
-        agent_single: Agent,
-        max_iterations: int
+            self,
+            agents: List[Agent],
+            name:str,
     ):
+        self.modify_agent_method = None
         self.__agents = agents
-        self._agent_single = agent_single
-        self.algorithm_data = []
-        self.comunication_history = []
-        self.observer_multi = ProgressBarObserver(max=max_iterations)
-        self.observer_single = ProgressBarObserver(max=max_iterations)
+        self.algorithm_data : List[PopulationsData] = [] 
+        self.communication_history = []
+        self.debug = False
+        self.modify_agent_during_run = False
+        self._deleted_agents = []
+        self.observer_multi = ProgressBarCycleObserver(max=1)
+        self.observer_single = ProgressBarCycleObserver(max=1)
+        self.history: RunData = RunData()
+        self.config: AgentConfigData = None
+        self.name: str = name
+        self.modify_agent_metod_name = "null"
 
     def get_agents(self):
         return self.__agents
 
-    def initalize(self):
-        
-        for agent in self.__agents:
-            agent.initalize(self.observer_multi)
-        self._agent_single.initalize(self.observer_single)
+    def set_agent_modification(self, enable, method, name):
+        self.modify_agent_during_run = enable
+        self.modify_agent_method = method
+        self.modify_agent_metod_name = name
 
-    
+    def set_debug(self, debug: bool):
+        self.debug = debug
+
+    def initialize(self):
+        for agent in self.__agents:
+            agent.initialize(self.observer_multi)
+
     def add_Agent(self, agent: Agent) -> None:
         self.__agents.append(agent)
 
-    def run_cycle(self, cycle_iterations : int) -> None:
+    def run_cycle(self, cycle_iterations: int) -> None:
         for agent in self.__agents:
             agent.run(cycle_iterations)
+
+    def add_history_data(self, x_coor_multi, results_multi, sampling):
+        self.history.add_data(x_coor_multi, results_multi, sampling)
+
+    def set_config(self, config):
+        self.config = config
+
+    def get_history(self):
+        return self.history
 
     def communicate(self, number_of_communications):
         for agent in self.__agents:
             for agent2 in random.sample(self.__agents, number_of_communications):
                 if agent == agent2:
                     continue
-                soultions = [agent.Island.algorithm.solutions, agent2.Island.algorithm.solutions]
-                spread, std, means_sol = calc_spread_and_std(soultions)
-                
+                solutions = [agent.Island.algorithm.solutions, agent2.Island.algorithm.solutions]
+                spread, std, means_sol = calc_spread_and_std(solutions)
+
                 res = agent.communicate(agent2)
-                population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol, result= res)
-                self.comunication_history.append(population)      
+                population = PopulationsData(solution_spread=spread, solution_std=std, solution_mean=means_sol,
+                                             result=res)
+                self.communication_history.append(population)
+                if self.modify_agent_during_run and std < 0.3 and res == False and spread < 10:
+                    deleted = self.modify_agent_method(agent2, agent)
+                    if deleted:
+                        self._deleted_agents.extend(agent2)
+                        self.__agents.remove(agent2)
+                    break
 
+    def set_observer(self, iterations):
+        self.observer_multi = ProgressBarCycleObserver(max=iterations)
+        self.observer_single = ProgressBarCycleObserver(max=iterations)
 
+    def run(self, cycles: int, cycle_iter: int, num_of_comm: int, run_comparison=True, plot_all=True):
 
-
-    def run(self, cycles : int, cycle_iter: int, num_of_comm:int):
-        logging.info("Socjo started")
-        time1 = time.time()
         for i in range(cycles):
-            for j in range(cycle_iter):
-                self.run_cycle(1)
-                self.collect_data()
-
+            self.run_cycle(cycle_iter)
+            self.collect_data()
             self.communicate(num_of_comm)
             self.collect_data()
 
-
-        logging.info(f"Socjo finished in {(time.time() - time1)/60}")
         time1 = time.time()
-        self.run_comparison()
-        logging.info(f"comparison finished in {(time.time() - time1)/60}")
-        time1 = time.time()
-        self.plot_results(1)
-        logging.info(f"plotting finished in {(time.time() - time1)/60}")
-        
 
-        
-    def plot_results(self, cycle_iter):
+    def plot_results(self, cycle_iter, x_ticks_compparison, results_compparison, comparison_type, executor_name):
         problem = self.__agents[0].Island.algorithm.problem
-        describe_string = f"{problem.get_name()} {problem.number_of_variables} variables no agents {len(self.__agents)}"
-        x_coord_multi, results_multi, x_coord_single , results_single = self.get_results()
-        logging.info(f"best socjo {results_multi[-1]} best single {results_single[-1]}")
-        draw_comparision_agents_plot(self.__agents, name = f"Agent comaprison Problem" + describe_string)
-        draw_debug_plots_agents(self.__agents, name = describe_string)
-        draw_debug_plots_summary(self.algorithm_data,self.__agents, name = describe_string, cycle_iter = cycle_iter)
-        draw_comparisson_multi_and_single(x_coord_multi, results_multi, x_coord_single , results_single, name = f"Single agent and multi agent system comparison" + describe_string)
-        draw_histogram_of_communication(self.comunication_history)
-
-    def run_comparison(self):
-        all_iterations = sum([agent.get_num_of_iteration() for agent in self.__agents])
-        self._agent_single.run(all_iterations)
+        describe_string = f"{problem.get_name()}, {problem.number_of_variables} variables,"
+        x_coord_multi, results_multi = self.get_results()
+        draw_comparison_agents_plot(self.__agents, name=f"{describe_string} agents comparison " )
+        draw_comparison_multi_and_single(x_coord_multi, results_multi, x_ticks_compparison, results_compparison,
+                                         describe_string + " algorithm comparison", comparison_type, executor_name)
+        #draw_debug_plots_agents(self.__agents, name=describe_string)
+        #draw_debug_plots_summary(self.algorithm_data, self.__agents, name=describe_string, cycle_iter=cycle_iter)
+        #draw_histogram_of_communication(self.communication_history)
 
     def get_results(self):
-        res_multi = self.__agents[0].Island.get_history_soultion()
-        x_coord_multi = list(range(1, len(res_multi)+1))
+        results = self.__agents[0].Island.get_history_solution()
+        x_ticks = list(range(1, len(results) + 1))
 
-        #get best solution for iteration from agents over time assuming equal number of iterations
+        # get the best solution for iteration from agents over time assuming equal number of iterations
         for agent in self.__agents[1:]:
-            temp = agent.Island.get_history_soultion()
-        
+            temp = agent.Island.get_history_solution()
+
             for i in range(len(temp)):
-                res_multi[i] = min(res_multi[i], temp[i])
-                x_coord_multi[i] += i
-        return x_coord_multi, res_multi, list(range(len(self._agent_single.Island.get_history_soultion()))), self._agent_single.Island.get_history_soultion()
+                results[i] = min(results[i], temp[i])
+                x_ticks[i] += i
+        return x_ticks, results
 
     def collect_data(self):
         all_islands = [agent.Island for agent in self.__agents]
-        all_solutions = [island.algorithm.solutions for island  in all_islands]
+        all_solutions = [island.algorithm.solutions for island in all_islands]
 
         spread, std, means_sol = calc_spread_and_std(all_solutions)
-        population = PopulationsData(solution_spread= spread, solution_std=std, solution_mean=means_sol)
-        self.algorithm_data.append(population)      
-
-        
-        
+        population = PopulationsData(solution_spread=spread, solution_std=std, solution_mean=means_sol)
+        self.algorithm_data.append(population)
